@@ -39,6 +39,7 @@ app.get("/auth/login", (req, res) => {
 const VERIFY_TOKEN = process.env.VERIFY_TOKEN || "my_instagram_webhook_12";
 
 app.get("/auth/callback", (req, res) => {
+  console.log("CALLBACK RECEIVED");
   console.log("QUERY:", req.query);
 
   const mode = req.query["hub.mode"];
