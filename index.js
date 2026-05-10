@@ -33,38 +33,24 @@ app.get("/auth/login", (req, res) => {
 });
 
 // ----------------------------------------
-// 2️⃣ Callback → Get Short-Lived Token
+// 2️⃣ Callback → Get Short-Lived Token / Webhook Verify
 // ----------------------------------------
-app.get("/auth/callback", async (req, res) => {
-  const code = req.query.code;
 
-  if (!code) {
-    return res.status(400).send("No code received");
+const VERIFY_TOKEN = process.env.VERIFY_TOKEN || "my_instagram_webhook_12";
+
+app.get("/auth/callback", (req, res) => {
+  console.log("QUERY:", req.query);
+
+  const mode = req.query["hub.mode"];
+  const token = req.query["hub.verify_token"];
+  const challenge = req.query["hub.challenge"];
+
+  if (mode === "subscribe" && token === VERIFY_TOKEN) {
+    console.log("WEBHOOK VERIFIED");
+    return res.type("text/plain").status(200).send(challenge);
   }
 
-  try {
-    const response = await axios.get(
-      "https://graph.facebook.com/v19.0/oauth/access_token",
-      {
-        params: {
-          client_id: APP_ID,
-          client_secret: APP_SECRET,
-          redirect_uri: REDIRECT_URI,
-          code: code,
-        },
-      }
-    );
-
-    const shortToken = response.data.access_token;
-
-    res.json({
-      message: "Short-lived token generated",
-      shortToken,
-    });
-  } catch (err) {
-    console.error(err.response?.data || err.message);
-    res.status(500).send("Error generating token");
-  }
+  return res.sendStatus(403);
 });
 
 // ----------------------------------------
