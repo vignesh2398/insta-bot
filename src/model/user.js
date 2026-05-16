@@ -13,10 +13,6 @@ const userSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
-
-    expireOn: {
-      type: Number,
-    },
   },
   {
     timestamps: true,

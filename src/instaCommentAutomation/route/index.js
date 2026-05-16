@@ -2,7 +2,7 @@ import express from 'express';
 import { autoReply } from '../controller/autoReply';
 const router = express.Router();
 
-router.post('/auth/callback', async (req,res,next) => {
+router.get('/auth/callback', async (req,res,next) => {
   try {
 const result = await autoReply(req.body)
 res.json(result);
