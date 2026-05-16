@@ -1,4 +1,25 @@
-export const autoReplyModule = (entries=[]) => {
+import { sendInstagramMessage } from "../../config/privateReply.js";
+import User from "../../model/user";
+
+export const getToken= async () => {
+  try {
+    await User.findOne({ UserId: process.env.INSTAGRAM_USER_ID }).then((user) => {
+      if (user) {
+        console.log("User found:", user);
+        return user.accessToken;
+      } else {
+        console.log("User not found");
+        return null;
+      }
+    });
+  } catch (err) {
+    console.error("Error fetching token:", err);
+    return null;
+  }
+};
+
+
+export const autoReplyModule = async(entries=[]) => {
   try {
 
     entries.forEach((entry) => {
@@ -33,9 +54,14 @@ export const autoReplyModule = (entries=[]) => {
             comment: commentText,
             commentId,
             mediaId,
+            recipientId: userId,
+            ACCESS_TOKEN: process.env.INSTAGRAM_ACCESS_TOKEN
           };
-
-          console.log(formattedData);
+          //  sendInstagramMessage(formattedData);
+          if(mediaId==process.env.MEDIA_ID && commentText==process.env.COMMENT_TEXT ){
+            console.log("MATCH FOUND! COMMENT:", formattedData);
+            console.log(formattedData);
+          }         
         }
       });
     });

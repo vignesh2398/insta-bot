@@ -26,7 +26,7 @@ router.post("/callback", (req, res) => {
 });
 router.get("/media", (req, res) => {
     try {
-        console.log("MEDIA REQUEST RECEIVED");
+      
         // Handle media request
     } catch (err) {
         console.error("Error in media request:", err);
