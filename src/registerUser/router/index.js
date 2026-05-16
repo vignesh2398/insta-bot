@@ -1,5 +1,6 @@
 import express from 'express';
 import { redirectUrl, validateUser } from '../controller/registerUser.js';
+import { autoReply } from '../../instaCommentAutomation/controller/autoReply.js';
 const router = express.Router();
 
 router.get('/redirecturl', async (req,res,next) => {
@@ -11,7 +12,7 @@ res.json({message:result});
   }
 });
 
-router.get('/auth/callback', async (req,res,next) => {
+router.get('/callback', async (req,res,next) => {
   try {
   const code = req.query.code;
      await validateUser(code);
@@ -22,4 +23,39 @@ router.get('/auth/callback', async (req,res,next) => {
   }
 }
 );
+
+router.get('/webhook', async (req,res,next) => {
+  try{
+
+  console.log("QUERY:", req.query);
+
+  const mode = req.query["hub.mode"];
+  const token = req.query["hub.verify_token"];
+  const challenge = req.query["hub.challenge"];
+
+  if (mode === "subscribe" && token === "my_instagram_webhook_12") {
+    console.log("WEBHOOK VERIFIED");
+    return res.type("text/plain").status(200).send(challenge);
+  }
+      
+  }catch(err){
+    console.error("Error in callback:", err);
+  return res.sendStatus(403);
+  }
+});
+
+router.post("/webhook", (req, res) => {
+    try {
+      console.log("WEBHOOK EVENT:");
+      const result = await autoReply(req.body)
+  console.log(JSON.stringify(req.body, null, 2));
+  autoReply(req.body);
+
+  res.sendStatus(200);
+    }catch(err){
+        console.error("Error in callback:", err);
+        return res.sendStatus(403);
+    }
+
+});
 export default router;

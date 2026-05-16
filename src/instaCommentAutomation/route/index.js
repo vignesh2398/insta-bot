@@ -2,7 +2,7 @@ import express from 'express';
 import { autoReply } from '../controller/autoReply';
 const router = express.Router();
 
-router.get('/auth/callback', async (req,res,next) => {
+router.get('/callback', async (req,res,next) => {
   try {
 const result = await autoReply(req.body)
 res.json(result);
@@ -11,18 +11,28 @@ res.json(result);
   }
 });
 
-// router.post("/auth/callback", (req, res) => {
-//     try {
-//   console.log("WEBHOOK EVENT:");
-//   console.log(JSON.stringify(req.body, null, 2));
+router.post("/callback", (req, res) => {
+    try {
+  console.log("WEBHOOK EVENT:");
+  console.log(JSON.stringify(req.body, null, 2));
+  autoReply(req.body);
 
-//   res.sendStatus(200);
-//     }catch(err){
-//         console.error("Error in callback:", err);
-//         return res.sendStatus(403);
-//     }
+  res.sendStatus(200);
+    }catch(err){
+        console.error("Error in callback:", err);
+        return res.sendStatus(403);
+    }
 
-// });
+});
+router.get("/media", (req, res) => {
+    try {
+        console.log("MEDIA REQUEST RECEIVED");
+        // Handle media request
+    } catch (err) {
+        console.error("Error in media request:", err);
+        return res.sendStatus(403);
+    }
+});
 
 // router.get("/auth/callback", (req, res) => {
 //   console.log("CALLBACK RECEIVED");

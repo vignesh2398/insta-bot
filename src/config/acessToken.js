@@ -18,9 +18,28 @@ export const generateAccessToken = async (code) => {
         },
       }
     );
+const longToken=await axios.get(
+  "https://graph.instagram.com/access_token",
+  {
+    params: {
+      grant_type: "ig_exchange_token",
+      client_secret: process.env.INSTAGRAM_CLIENT_SECRET,
+      access_token: response.data.access_token,
+    },
+  }
+);
 
-    return response.data;
+    return longToken.data;
 
+//     const response = await axios.get(
+//   "https://graph.instagram.com/me",
+//   {
+//     params: {
+//       fields: "id,username",
+//       access_token: accessToken,
+//     },
+//   }
+// );
   } catch (error) {
     console.error(
       "Error generating access token:",
@@ -28,5 +47,26 @@ export const generateAccessToken = async (code) => {
     );
 
     throw new Error("Failed to generate access token");
+  }
+};
+
+export const userDetails = async (accessToken) => {
+  try {
+    const response = await axios.get(
+      "https://graph.instagram.com/me",
+      {
+        params: {
+          fields: "id,username",
+          access_token: accessToken,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Error fetching user details:",
+      error.response?.data || error.message
+    );
+    throw new Error("Failed to fetch user details");
   }
 };

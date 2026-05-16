@@ -1,80 +1,45 @@
 export const autoReplyModule = (entries=[]) => {
   try {
-    for (const entry of entries) {
+  const entries = req.body.entry || [];
 
+    entries.forEach((entry) => {
       const changes = entry.changes || [];
 
-      for (const change of changes) {
-
-        // Only comments webhook
+      changes.forEach((change) => {
         if (change.field === "comments") {
+          const value = change.value;
 
-          const commentId =
-            change.value.id;
+          // COMMENT DETAILS
+          const commentId = value.id;
+          const commentText = value.text;
 
-          const commentText =
-            change.value.text;
+          // USER DETAILS
+          const userId = value.from?.id;
+          const username = value.from?.username;
 
-          const username =
-            change.value.from.username;
+          // MEDIA DETAILS
+          const mediaId = value.media?.id;
 
-          const userId =
-            change.value.from.id;
+          console.log("========== COMMENT RECEIVED ==========");
+          console.log("Username:", username);
+          console.log("User ID:", userId);
+          console.log("Comment:", commentText);
+          console.log("Comment ID:", commentId);
+          console.log("Media ID:", mediaId);
 
-          console.log({
-            commentId,
-            commentText,
+          // Example object
+          const formattedData = {
             username,
             userId,
-          });
+            comment: commentText,
+            commentId,
+            mediaId,
+          };
 
-          // Check comment text
-          if (
-            commentText &&
-            commentText.toLowerCase() === "help"
-          ) {
-
-            // -----------------------------------
-            // 1. PUBLIC COMMENT REPLY
-            // -----------------------------------
-
-            await axios.post(
-              `https://graph.facebook.com/v22.0/${commentId}/replies`,
-              {
-                message:
-                  `@${username} check your DM 🚀`
-              },
-              {
-                params: {
-                  access_token: ACCESS_TOKEN
-                }
-              }
-            );
-
-            console.log("Comment reply sent");
-
-            // -----------------------------------
-            // 2. PRIVATE DM / PRIVATE REPLY
-            // -----------------------------------
-
-            await axios.post(
-              `https://graph.facebook.com/v22.0/${commentId}/private_replies`,
-              {
-                message:
-                  "Here is your guide 🚀"
-              },
-              {
-                params: {
-                  access_token: ACCESS_TOKEN
-                }
-              }
-            );
-
-            console.log("Private DM sent");
-          }
+          console.log(formattedData);
         }
-      }
-    }
+      });
+    });
   } catch (error) {
 
     console.log(
