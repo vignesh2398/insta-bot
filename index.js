@@ -176,11 +176,11 @@ const PORT = 3000;
 // await run();
 // ----------------------------------------
 
-app.listen(3000, () =>{ 
-  mongoose.connect("mongodb+srv://rvignesh60474_db_user:3XOgXTdA4qLIga3L@instaautomation.zsrca9b.mongodb.net/").then(()=>{
+app.listen(process.env.PORT, () =>{ 
+  mongoose.connect(process.env.mongourl).then(()=>{
     console.log("DB connected")
   });
-  console.log('Server running on port 5000')});
+  console.log('Server running on port', process.env.PORT)});
 
 // app.listen(PORT, () => {
 //   console.log(`🚀 Server running on http://localhost:${PORT}`);
