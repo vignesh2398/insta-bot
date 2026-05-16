@@ -1,5 +1,4 @@
-import { autoReply, autoReplyModule } from "../module/inst_comment";
-
+import { autoReplyModule } from "../module/inst_comment.js";
 export const autoReply = async (data) => {
     try {
         const entries = data.entry || [];

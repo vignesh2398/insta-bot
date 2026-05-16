@@ -44,12 +44,11 @@ router.get('/webhook', async (req,res,next) => {
   }
 });
 
-router.post("/webhook", (req, res) => {
+router.post("/webhook", async(req, res) => {
     try {
       console.log("WEBHOOK EVENT:");
       const result = await autoReply(req.body)
   console.log(JSON.stringify(req.body, null, 2));
-  autoReply(req.body);
 
   res.sendStatus(200);
     }catch(err){
