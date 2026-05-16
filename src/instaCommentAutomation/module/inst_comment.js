@@ -1,6 +1,5 @@
 export const autoReplyModule = (entries=[]) => {
   try {
-  const entries = req.body.entry || [];
 
     entries.forEach((entry) => {
       const changes = entry.changes || [];
