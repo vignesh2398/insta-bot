@@ -13,7 +13,7 @@ import axios from "axios";
 export const sendInstagramMessage = async (data) => {
     try {
       console.log("Sending message with data:", data);
-    const INSTAGRAM_API_URL = `https://graph.instagram.com/v25.0/26097144059958903/messages`;
+    const INSTAGRAM_API_URL = `https://graph.instagram.com/v25.0/me/messages`;
     const response = await axios.post(
       INSTAGRAM_API_URL,
   {
@@ -26,7 +26,7 @@ export const sendInstagramMessage = async (data) => {
 },
       {
         headers: {
-          Authorization: `Bearer ${data.ACCESS_TOKEN}`,
+          Authorization: `Bearer ${process.env.INSTAGRAM_ACCESS_TOKEN}`,
           "Content-Type": "application/json",
         },
       }
