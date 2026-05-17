@@ -33,11 +33,11 @@ export const sendInstagramMessage = async (data) => {
     );
 
     // comment reply
-
+const publicCommentReply=["Hi, thanks for the comment.", "Check DM 📨", "Sure", "can you check the Inbox? 🙂" ];
     const publicReply = await axios.post(
       `https://graph.instagram.com/v25.0/${data.commentId}/replies`,
       new URLSearchParams({
-        message: "Thanks for your comment",
+        message:  publicCommentReply[Math.floor(Math.random() * publicCommentReply.length)],
       }),
       {
         params: {
