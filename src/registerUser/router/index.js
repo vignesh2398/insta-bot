@@ -44,7 +44,7 @@ router.get('/webhook', async (req,res,next) => {
   }
 });
 
-router.post("/webhook", (req, res,next) => {
+router.post("/webhook",async (req, res,next) => {
     try {
       console.log("WEBHOOK EVENT:");
       console.log(JSON.stringify(req.body, null, 2));
