@@ -179,7 +179,7 @@ const PORT = 3000;
 
 app.use('/',router)
 // write middleware for authentication and then use it here for all routes that require authentication
-app.use('/auth',router)
+// app.use('/auth',router)
 app.listen(process.env.PORT, () =>{ 
   mongoose.connect(process.env.mongourl).then(()=>{
     console.log("DB connected")
