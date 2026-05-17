@@ -1,5 +1,6 @@
 import { sendInstagramMessage } from "../../config/privateReply.js";
-import User from "../../model/user";
+import Media from "../../model/media.js";
+import User from "../../model/user.js";
 
 export const getToken= async () => {
   try {
@@ -21,50 +22,50 @@ export const getToken= async () => {
 
 export const autoReplyModule = async(entries=[]) => {
   try {
-
+    let formattedData;
+let accountId=      entry.id
     entries.forEach((entry) => {
       const changes = entry.changes || [];
-
       changes.forEach((change) => {
         if (change.field === "comments") {
           const value = change.value;
-
           // COMMENT DETAILS
           const commentId = value.id;
           const commentText = value.text;
-
           // USER DETAILS
           const userId = value.from?.id;
           const username = value.from?.username;
-
           // MEDIA DETAILS
           const mediaId = value.media?.id;
-
           console.log("========== COMMENT RECEIVED ==========");
           console.log("Username:", username);
           console.log("User ID:", userId);
           console.log("Comment:", commentText);
           console.log("Comment ID:", commentId);
           console.log("Media ID:", mediaId);
-
           // Example object
-          const formattedData = {
+           formattedData = {
             username,
             userId,
             comment: commentText,
             commentId,
             mediaId,
             recipientId: userId,
-            ACCESS_TOKEN: process.env.INSTAGRAM_ACCESS_TOKEN
           };
-          //  sendInstagramMessage(formattedData);
-          if(mediaId==process.env.MEDIA_ID && commentText==process.env.COMMENT_TEXT ){
-            console.log("MATCH FOUND! COMMENT:", formattedData);
-            console.log(formattedData);
-          }         
+       
         }
       });
     });
+    // check mediaID and comment text from DB
+ const mediaData=   await Media.find({
+  mediaId: formattedData.mediaId,
+  commentText: formattedData.comment.toLowerCase() 
+})
+mediaData.forEach((data)=>{
+  formattedData.replyMessage=data.replyMessage;
+    sendInstagramMessage(formattedData);
+})
+
   } catch (error) {
 
     console.log(

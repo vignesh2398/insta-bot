@@ -16,7 +16,7 @@ export const ValidateUser = async (code) => {
     UserId: userDetail.id,
     accessToken: token.access_token,
     expiresIn: token.expires_in,
-    accountId: token.id
+    accountId: token.accountId
    })
    console.log("User created:", user);
     return "User validated successfully!";
