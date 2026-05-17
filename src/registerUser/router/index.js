@@ -48,7 +48,7 @@ router.post("/webhook", (req, res,next) => {
     try {
       console.log("WEBHOOK EVENT:");
       console.log(JSON.stringify(req.body, null, 2));
-      const result =  autoReply(req.body)
+      const result = await autoReply(req.body)
 
   res.sendStatus(200);
     }catch(err){

@@ -1,6 +1,8 @@
 import { autoReplyModule } from "../module/inst_comment.js";
 export const autoReply = async (data) => {
     try {
+        console.log("Received data in autoReply:",data);
+
         const entries = data.entry || [];
         return await autoReplyModule(entries);
     } catch (err) {
