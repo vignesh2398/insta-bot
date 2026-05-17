@@ -61,16 +61,18 @@ export const autoReplyModule = async(entries=[]) => {
   mediaId: formattedData.mediaId,
   commentText: formattedData.comment.toLowerCase() 
 })
+if(mediaData.length===0){
+  console.log("No matching media found for comment:", formattedData.comment);
+  return;
+}
+
 mediaData.forEach((data)=>{
   formattedData.replyMessage=data.replyMessage;
     sendInstagramMessage(formattedData);
 })
 
   } catch (error) {
-
-    console.log(
-      error.response?.data || error.message
-    );
+    console.log(error," Error in autoReplyModule");
  throw new Error(error.response?.data);    
   }
 };

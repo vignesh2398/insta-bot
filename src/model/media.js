@@ -19,6 +19,9 @@ const mediaSchema = new mongoose.Schema(
     },
     replyStatus: {
       type: Boolean, 
+    },
+    commentText: {
+      type: String, 
     }
   },
   {

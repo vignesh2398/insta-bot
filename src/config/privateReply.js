@@ -13,7 +13,7 @@ import axios from "axios";
 export const sendInstagramMessage = async (data) => {
     try {
       console.log("Sending message with data:", data);
-    const INSTAGRAM_API_URL = `https://graph.instagram.com/v25.0/27709724931961328/messages`;
+    const INSTAGRAM_API_URL = `https://graph.instagram.com/v25.0/26097144059958903/messages`;
     const response = await axios.post(
       INSTAGRAM_API_URL,
   {
@@ -38,5 +38,6 @@ export const sendInstagramMessage = async (data) => {
       "Error:",
       error.response?.data || error.message
     );
+    throw new Error("Failed to send message");
   }
 }
