@@ -44,16 +44,16 @@ router.get('/webhook', async (req,res,next) => {
   }
 });
 
-router.post("/webhook", (req, res) => {
+router.post("/webhook", (req, res,next) => {
     try {
       console.log("WEBHOOK EVENT:");
-      // const result =  autoReply(req.body)
-  console.log(JSON.stringify(req.body, null, 2));
+      console.log(JSON.stringify(req.body, null, 2));
+      const result =  autoReply(req.body)
 
   res.sendStatus(200);
     }catch(err){
         console.error("Error in callback:", err);
-        return res.sendStatus(403);
+        next(err);
     }
 
 });
