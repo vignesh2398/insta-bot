@@ -41,7 +41,7 @@ export const sendInstagramMessage = async (data) => {
       }),
       {
         params: {
-          access_token: accessToken,
+          access_token: process.env.INSTAGRAM_ACCESS_TOKEN,
         },
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",

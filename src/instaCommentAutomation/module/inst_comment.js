@@ -25,7 +25,7 @@ export const autoReplyModule = async(entries=[]) => {
     let formattedData;
 // let accountId=      entries.id
     entries.forEach((entry) => {
-      const changes = entry.changes || [];
+      const changes = entry?.changes || [];
       changes.forEach((change) => {
         if (change.field !== "comments") {
           return; // skip if not a comment
