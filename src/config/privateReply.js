@@ -32,6 +32,28 @@ export const sendInstagramMessage = async (data) => {
       }
     );
 
+    // comment reply
+
+    const publicReply = await axios.post(
+      `https://graph.instagram.com/v25.0/${data.commentId}/replies`,
+      new URLSearchParams({
+        message: "Thanks for your comment",
+      }),
+      {
+        params: {
+          access_token: accessToken,
+        },
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+      }
+    );
+
+    console.log(publicReply.data);
+ 
+
+
+
     console.log("Message sent:", response.data);
   } catch (error) {
     console.error(
