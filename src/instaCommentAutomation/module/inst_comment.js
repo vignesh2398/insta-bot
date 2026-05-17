@@ -23,7 +23,7 @@ export const getToken= async () => {
 export const autoReplyModule = async(entries=[]) => {
   try {
     let formattedData;
-let accountId=      entry.id
+// let accountId=      entries.id
     entries.forEach((entry) => {
       const changes = entry.changes || [];
       changes.forEach((change) => {
