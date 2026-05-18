@@ -30,7 +30,7 @@ const longToken=await axios.get(
 );
 
 
-    return {...longToken.data,accountId:response.data.user_id};
+    return {...longToken.data};
 
 //     const response = await axios.get(
 //   "https://graph.instagram.com/me",
@@ -57,7 +57,7 @@ export const userDetails = async (accessToken) => {
       "https://graph.instagram.com/me",
       {
         params: {
-          fields: "id,username",
+          fields: "id,username,account_type,user_id",
           access_token: accessToken,
         },
       }

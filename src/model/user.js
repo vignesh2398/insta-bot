@@ -2,17 +2,26 @@ import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema(
   {
-    accountId: {
+    id: {
       type: String,
       required: true,
       trim: true,
     },
-    UserId: {
+    userid: {
       type: String,
       required: true,
       trim: true,
     },
-
+    username:{
+      type: String,
+      required: true,
+      trim: true,
+    },
+    account_type:{
+      type: String,
+      required: true,
+      trim: true,
+    },
     accessToken: {
       type: String,
       required: true,
