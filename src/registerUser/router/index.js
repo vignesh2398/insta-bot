@@ -27,14 +27,13 @@ router.get('/callback', async (req,res,next) => {
 router.get('/webhook', async (req,res,next) => {
   try{
 
-  console.log("QUERY:", req.query);
+
 
   const mode = req.query["hub.mode"];
   const token = req.query["hub.verify_token"];
   const challenge = req.query["hub.challenge"];
 
   if (mode === "subscribe" && token === "my_instagram_webhook_12") {
-    console.log("WEBHOOK VERIFIED");
     return res.type("text/plain").status(200).send(challenge);
   }
       
@@ -44,17 +43,24 @@ router.get('/webhook', async (req,res,next) => {
   }
 });
 
-router.post("/webhook",async (req, res,next) => {
-    try {
-      console.log("WEBHOOK EVENT:");
-      console.log(JSON.stringify(req.body, null, 2));
-      const result = await autoReply(req.body)
+router.post("/webhook", async (req, res, next) => {
+  try {
+    autoReply(req.body).catch((err) => {
+      console.error("Async autoReply failed", {
+        requestBody: req.body,
+        error: err.message || err,
+        stack: err.stack,
+      });
+    });
 
-  res.sendStatus(200);
-    }catch(err){
-        console.error("Error in callback:", err);
-        next(err);
-    }
-
+    return res.sendStatus(200);
+  } catch (err) {
+    console.error("Error in webhook POST callback", {
+      requestBody: req.body,
+      error: err.message || err,
+      stack: err.stack,
+    });
+    next(err);
+  }
 });
 export default router;
