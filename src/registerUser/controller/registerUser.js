@@ -1,12 +1,14 @@
 import { generateAccessToken } from "../../config/acessToken.js";
 import { ValidateUser } from "../module/registerUser.js";
+import { getUserMedia } from "../module/media.js";
+import User from "../../model/user.js";
 
 export const redirectUrl = () => {
   try {
     const baseUrl = process.env.baseURl;
 
     const params = new URLSearchParams({
-      force_reauth: "true",
+      force_reauth: "false",
       client_id: process.env.INSTAGRAM_CLIENT_ID,
       redirect_uri: process.env.REDIRECT_URI,
       response_type: "code",
@@ -22,16 +24,59 @@ export const redirectUrl = () => {
   }
 };
 
-export const validateUser = async (code) => {
+export const validateUser = async (code, googleId) => {
   try {
-
-    await ValidateUser(code);
-
-    // Here you would typically exchange the code for an access token
-    // and validate the user. This is a placeholder for demonstration.
-    return "User validated successfully!";
+    await ValidateUser(code, googleId);
+    return "Instagram account validated successfully!";
   } catch (error) {
     console.error("Error in user validation:", error);
-    throw new Error("Error in user validation");
+    throw error;
+  }
+};
+
+const getInstagramAccessTokenFromDb = async (googleId) => {
+  const user = await User.findOne({ googleId });
+
+  if (!user || !user.instagramAccounts?.length) {
+    throw new Error(`No Instagram accounts found for user ${googleId}`);
+  }
+
+  const instagramAccount = user.instagramAccounts[0];
+  if (!instagramAccount.accessToken) {
+    throw new Error(`No access token stored for Instagram account`);
+  }
+
+  return instagramAccount.accessToken;
+};
+
+export const getMedia = async (googleId) => {
+  try {
+    if (!googleId) {
+      throw new Error("Missing googleId parameter");
+    }
+
+    // Find Google user and get their first Instagram account
+    const user = await User.findOne({ googleId });
+    if (!user) {
+      throw new Error(`Google user ${googleId} not found`);
+    }
+
+    if (!user.instagramAccounts || user.instagramAccounts.length === 0) {
+      throw new Error(`No Instagram accounts linked for user ${googleId}`);
+    }
+
+    const igAccount = user.instagramAccounts[0];
+    const igUserId = igAccount.instagramId;
+    const accessToken = igAccount.accessToken;
+
+    if (!accessToken) {
+      throw new Error("No access token stored for Instagram account");
+    }
+
+    const media = await getUserMedia(accessToken, igUserId);
+    return media;
+  } catch (error) {
+    console.error("Error in media retrieval:", error);
+    throw error;
   }
 };

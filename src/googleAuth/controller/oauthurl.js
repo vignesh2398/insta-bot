@@ -1,5 +1,5 @@
-
-
+import dotenv from "dotenv";
+dotenv.config();
 const CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 const REDIRECT_URI = process.env.GOOGLE_REDIRECT_URI;
 
@@ -16,7 +16,6 @@ export const generateGoogleAuthUrl = () => {
     response_type: "code",
     scope: scopes.join(" "),
     access_type: "offline",
-    prompt: "consent",
   });
 
   return `https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`;

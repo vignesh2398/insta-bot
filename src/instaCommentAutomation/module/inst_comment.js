@@ -1,6 +1,6 @@
 import { sendInstagramMessage } from "../../config/privateReply.js";
 import Media from "../../model/media.js";
-import User from "../../model/user.js";
+
 
 export const getToken= async () => {
   try {

@@ -1,35 +1,87 @@
 import mongoose from "mongoose";
 
-const userSchema = new mongoose.Schema(
+const instagramAccountSchema = new mongoose.Schema(
   {
-    id: {
+    instagramId: {
       type: String,
       required: true,
-      trim: true,
+    },
+
+    username: {
+      type: String,
+      required: true,
+    },
+
+    profilePicture: {
+      type: String,
+      default: "",
+    },
+
+    // OAuth token & identifiers
+    id: {
+      type: String,
     },
     userid: {
       type: String,
-      required: true,
-      trim: true,
     },
-    username:{
+    account_type: {
       type: String,
-      required: true,
-      trim: true,
-    },
-    account_type:{
-      type: String,
-      required: true,
-      trim: true,
     },
     accessToken: {
       type: String,
-      required: true,
-      unique: true,
     },
     expiresIn: {
       type: Number,
+    },
+    // optional refresh token (if using long-lived flow)
+    refreshToken: {
+      type: String,
+    },
+    tokenExpiresAt: {
+      type: Date,
+    },
+
+    isActive: {
+      type: Boolean,
+      default: true,
+    },
+  },
+  { _id: false }
+);
+
+const googleAuthSchema = new mongoose.Schema(
+  {
+    googleId: {
+      type: String,
       required: true,
+      unique: true,
+      index: true,
+    },
+
+    name: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+      lowercase: true,
+      trim: true,
+    },
+
+    picture: {
+      type: String,
+      default: "",
+    },
+
+    instagramAccounts: [instagramAccountSchema],
+
+    lastLogin: {
+      type: Date,
+      default: Date.now,
     },
   },
   {
@@ -37,6 +89,6 @@ const userSchema = new mongoose.Schema(
   }
 );
 
-const User = mongoose.model("User", userSchema);
+const User = mongoose.model("User", googleAuthSchema);
 
 export default User;

@@ -47,7 +47,7 @@ const longToken=await axios.get(
       error.response?.data || error.message
     );
 
-    throw new Error("Failed to generate access token");
+    throw  Error("Failed to generate access token");
   }
 };
 

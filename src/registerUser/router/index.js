@@ -1,6 +1,7 @@
 import express from 'express';
-import { redirectUrl, validateUser } from '../controller/registerUser.js';
+import { getMedia, redirectUrl, validateUser } from '../controller/registerUser.js';
 import { autoReply } from '../../instaCommentAutomation/controller/autoReply.js';
+import { generateAccessToken } from '../../config/acessToken.js';
 const router = express.Router();
 
 router.get('/redirecturl', async (req,res,next) => {
@@ -12,11 +13,34 @@ res.json({message:result});
   }
 });
 
+
+router.get('/media', async (req,res,next) => {
+  try {
+    const googleId=req.query.googleId;        
+    if(!googleId){
+      return res.status(400).json({error:"Missing google_id query parameter"});
+    }
+    const result = await getMedia(googleId);
+
+    res.json(result);
+  } catch (err) {
+    next(err);
+  }
+});
+
+
+
 router.get('/callback', async (req,res,next) => {
   try {
   const code = req.query.code;
-     await validateUser(code);
-    res.json({message:"asdasda route is working!"});
+  
+  if (!code) {
+    return res.status(400).json({error: "Missing authorization code"});
+  }
+const data=await generateAccessToken(code)
+console.log("Access Token Data:", data);
+
+    res.json({message:"Instagram account linked successfully!"});
   }
   catch (err) {
     next(err);
@@ -24,6 +48,9 @@ router.get('/callback', async (req,res,next) => {
 }
 );
 
+
+
+// need to put in no auth routes 
 router.get('/webhook', async (req,res,next) => {
   try{
 
