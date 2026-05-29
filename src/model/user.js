@@ -111,6 +111,20 @@ googleAuthSchema.statics.addInstagramAccount = async function (googleId, instagr
   return updatedUser;
 };
 
+googleAuthSchema.statics.removeInstagramAccount = async function (googleId) {
+  const updatedUser = await this.findOneAndUpdate(
+    { googleId },
+    { $set: { instagramAccounts: [] } },
+    { new: true }
+  );
+
+  if (!updatedUser) {
+    throw new Error("User not found");
+  }
+
+  return updatedUser;
+};
+
 const User = mongoose.model("User", googleAuthSchema);
 
 export default User;

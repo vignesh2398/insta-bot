@@ -30,7 +30,7 @@ app.use('/auth', outhrouter)
 
 const authMiddleware = (req, res, next) => {
   const token = req.cookies?.token;
-  console.log("Auth Token Cookie:", token);
+
 
   if (!token) {
     return res.status(401).json({ error: "Token missing" });

@@ -1,30 +1,7 @@
 import axios from "axios";
 
-export const getUserMedia = async (accessToken, igUserId) => {
+export const getUserMedia = async ({accessToken, igUserId,nextPageToken}) => {
   try {
-
-
-// {
-//   "posts": [
-//     {
-//       "id": 1,
-//       "image": "...",
-//       "daysAgo": "2d ago",
-//       "caption": "...",
-//       "comments": 128,
-//       "enabled": true,
-//       "replyAll": true,
-//       "keywords": ["link","price","details"],
-//       "message": "...",
-//       "charCount": 96,
-//       "oldPost": false
-//     }
-//   ]
-// }
-
-
-
-
     const response = await axios.get(
       `https://graph.instagram.com/${igUserId}/media`,
       {
@@ -32,12 +9,13 @@ export const getUserMedia = async (accessToken, igUserId) => {
           fields:
             "id,caption,media_type,media_url,thumbnail_url,permalink,timestamp,username,comments_count",
           access_token: accessToken,
+          after: nextPageToken || undefined,
         },
       }
     );
 
     const mediaItems = response.data?.data || [];
-
+    const nextPage = response.data?.paging?.cursors?.after || null;
     const posts = mediaItems.map((item) => {
       const timestamp = item.timestamp ? new Date(item.timestamp) : null;
       const ageMs = timestamp ? Date.now() - timestamp.getTime() : 0;
@@ -69,7 +47,7 @@ export const getUserMedia = async (accessToken, igUserId) => {
       };
     });
 
-    return { posts };
+    return { posts ,nextPageToken: nextPage };
   } catch (error) {
     console.error(
       "Error fetching Instagram media:",

@@ -49,7 +49,7 @@ const getInstagramAccessTokenFromDb = async (googleId) => {
   return instagramAccount.accessToken;
 };
 
-export const getMedia = async (googleId) => {
+export const getMedia = async ({googleId, profilePicture, username, next}) => {
   try {
     if (!googleId) {
       throw new Error("Missing googleId parameter");
@@ -73,8 +73,8 @@ export const getMedia = async (googleId) => {
       throw new Error("No access token stored for Instagram account");
     }
 
-    const media = await getUserMedia(accessToken, igUserId);
-    return media;
+    const media = await getUserMedia({accessToken, igUserId, nextPageToken: next});
+    return { ...media, profilePicture, username ,"next": media.nextPageToken};
   } catch (error) {
     console.error("Error in media retrieval:", error);
     throw error;

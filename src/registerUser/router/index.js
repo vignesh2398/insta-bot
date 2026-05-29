@@ -18,11 +18,22 @@ res.json({message:result});
 router.get('/media', async (req,res,next) => {
   try {
     const googleId = req.user.id;
-    const result = await getMedia(googleId);
+console.log("Google ID:", req.user.given_name);
+    const result = await getMedia({googleId, profilePicture: req.user.picture, username: req.user.given_name,next: req.query.next});
     res.json(result);
   } catch (err) {
     next(err);
   }
+});
+
+router.get('/removeAccount', async (req,res,next) => {
+  try {
+    const googleId = req.user.id;
+    const result = await User.removeInstagramAccount(googleId);
+    res.json({message:"Instagram account removed successfully!", result});
+  } catch (err) {
+    next(err);
+  } 
 });
 
 
