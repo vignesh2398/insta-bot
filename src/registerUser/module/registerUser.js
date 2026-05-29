@@ -29,7 +29,7 @@ export const ValidateUser = async (code, googleId) => {
     googleUser.instagramAccounts.push({
       instagramId: userDetail.id,
       username: userDetail.username,
-      profilePicture: userDetail.picture || "",
+      profilePicture: userDetail.profile_picture_url || "",
       id: userDetail.id,
       userid: userDetail.user_id,
       account_type: userDetail.account_type,

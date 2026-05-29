@@ -89,6 +89,28 @@ const googleAuthSchema = new mongoose.Schema(
   }
 );
 
+googleAuthSchema.statics.addInstagramAccount = async function (googleId, instagramAccount) {
+  const updatedUser = await this.findOneAndUpdate(
+    {
+      googleId,
+      "instagramAccounts.instagramId": { $ne: instagramAccount.instagramId },
+    },
+    {
+      $push: { instagramAccounts: instagramAccount },
+    },
+    {
+      new: true,
+      runValidators: true,
+    }
+  );
+
+  if (!updatedUser) {
+    throw new Error("User not found or Instagram account already linked");
+  }
+
+  return updatedUser;
+};
+
 const User = mongoose.model("User", googleAuthSchema);
 
 export default User;

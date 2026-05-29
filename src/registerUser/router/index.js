@@ -1,7 +1,8 @@
 import express from 'express';
 import { getMedia, redirectUrl, validateUser } from '../controller/registerUser.js';
 import { autoReply } from '../../instaCommentAutomation/controller/autoReply.js';
-import { generateAccessToken } from '../../config/acessToken.js';
+import { generateAccessToken, userDetails } from '../../config/acessToken.js';
+import User from '../../model/user.js';
 const router = express.Router();
 
 router.get('/redirecturl', async (req,res,next) => {
@@ -16,12 +17,8 @@ res.json({message:result});
 
 router.get('/media', async (req,res,next) => {
   try {
-    const googleId=req.query.googleId;        
-    if(!googleId){
-      return res.status(400).json({error:"Missing google_id query parameter"});
-    }
+    const googleId = req.user.id;
     const result = await getMedia(googleId);
-
     res.json(result);
   } catch (err) {
     next(err);
@@ -38,9 +35,23 @@ router.get('/callback', async (req,res,next) => {
     return res.status(400).json({error: "Missing authorization code"});
   }
 const data=await generateAccessToken(code)
-console.log("Access Token Data:", data);
+const userDetail=await userDetails(data.access_token)
 
-    res.json({message:"Instagram account linked successfully!"});
+// import User from "./src/model/user.js";
+const accountData = {
+  instagramId: userDetail.id,
+  username: userDetail.username,
+  profilePicture: userDetail.profile_picture_url || "",
+  id: userDetail.id,
+  userid: userDetail.user_id,
+  account_type: userDetail.account_type,
+  accessToken: data.access_token,
+  expiresIn: data.expires_in,
+};
+
+const resd=await User.addInstagramAccount(req.user.id, accountData);
+
+    res.json({message:"Instagram account linked successfully!", resd});
   }
   catch (err) {
     next(err);

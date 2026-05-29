@@ -57,7 +57,7 @@ export const userDetails = async (accessToken) => {
       "https://graph.instagram.com/me",
       {
         params: {
-          fields: "id,username,account_type,user_id",
+          fields: "id,username,account_type,user_id,profile_picture_url",
           access_token: accessToken,
         },
       }
@@ -71,3 +71,4 @@ export const userDetails = async (accessToken) => {
     throw new Error("Failed to fetch user details");
   }
 };
+

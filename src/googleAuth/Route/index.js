@@ -74,13 +74,22 @@ outhrouter.get("/google/callback", async (req, res, next) => {
       await user.save();
     }
 
-    return res.status(200).json({
-      success: true,
-      message: "Google login successful",
-      googleId: googleUser.id,
-      tokens:tokens.access_token,
-      user:user.instagramAccounts.length > 0 ? true: false,
-    });
+    const cookieOptions = {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge: tokens.expires_in ? tokens.expires_in * 1000 : 24 * 60 * 60 * 1000,
+    };
+
+    return res
+      .status(200)
+      .cookie("token", tokens.access_token, cookieOptions)
+      .json({
+        success: true,
+        message: "Google login successful",
+        googleId: googleUser.id,
+        user: user.instagramAccounts.length > 0 ? true : false,
+      });
 
   } catch (err) {
     console.error(
