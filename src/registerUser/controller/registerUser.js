@@ -14,6 +14,7 @@ export const redirectUrl = () => {
       redirect_uri: process.env.REDIRECT_URI,
       response_type: "code",
       scope: process.env.INSTAGRAM_SCOPES,
+      prompt: "select_account",
     });
 
     return `${baseUrl}?${params.toString()}`;
