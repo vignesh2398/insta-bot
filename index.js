@@ -12,10 +12,8 @@ dns.setServers(['1.1.1.1', '8.8.8.8']);
 
 dotenv.config();
 const app = express();
-app.use(
-  "/webhook",
-  express.raw({ type: "application/json" })
-);
+app.use("/webhook", express.raw({ type: "application/json" }));
+app.use(express.json());
 app.use(cookieParser());
 
 app.use(
@@ -25,17 +23,10 @@ app.use(
   })
 );
 
-// app.use(
-//   cors({
-//     origin:[ "http://localhost:5173", "https://accounts.google.com" ], // React frontend URL
-//     credentials: true,
-//   })
-// );
-app.use(express.json());
+
 
 const PORT = 3000;
-// instagram routes
-// app.use('/',router)
+
 // google auth routes
 app.use('/auth', outhrouter)
 // write middleware for authentication and then use it here for all routes that require authentication

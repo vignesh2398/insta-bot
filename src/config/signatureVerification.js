@@ -1,6 +1,8 @@
 import crypto from "crypto";
 
 export const verifyMetaSignature = (req, res, next) => {
+  console.log("type:", typeof req.body);
+console.log("isBuffer:", Buffer.isBuffer(req.body));
   const signature = req.headers["x-hub-signature-256"];
 
   if (!signature) {
@@ -16,6 +18,7 @@ export const verifyMetaSignature = (req, res, next) => {
       .update(req.body)
       .digest("hex");
 
+console.log(Buffer.isBuffer(req.body));
   if (signature !== expectedSignature) {
     console.error("Invalid webhook signature");
     return res.status(403).send("Invalid signature");
