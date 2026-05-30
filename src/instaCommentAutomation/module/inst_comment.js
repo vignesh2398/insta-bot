@@ -37,6 +37,7 @@ export const autoReplyModule = async (entries = []) => {
         }
 
         const value = change.value || {};
+        console.log("Processing comment change:",value)
         const commentId = value.id;
         const commentText = value.text;
         const userId = value.from?.id;
