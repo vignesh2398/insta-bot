@@ -26,6 +26,7 @@ export const autoReplyModule = async (entries = []) => {
     if (!Array.isArray(entries) || entries.length === 0) {
       return;
     }
+    console.log("idddd",entries[0].id,"iddd")
 
     const sendTasks = [];
 
