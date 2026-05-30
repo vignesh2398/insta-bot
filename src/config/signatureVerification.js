@@ -1,7 +1,6 @@
 import crypto from "crypto";
 
 export const verifyMetaSignature = (req, res, next) => {
-  console.log("type:", typeof req.body);
   const signature = req.headers["x-hub-signature-256"];
 
   if (!signature) {
