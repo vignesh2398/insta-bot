@@ -10,12 +10,13 @@ console.log("isBuffer:", Buffer.isBuffer(req.body));
   }
 
   const appSecret = process.env.INSTAGRAM_CLIENT_SECRET;
+const bodyBuffer = Buffer.from(JSON.stringify(req.body));
 
   const expectedSignature =
     "sha256=" +
     crypto
       .createHmac("sha256", appSecret)
-      .update(req.body)
+      .update(bodyBuffer)
       .digest("hex");
 
 console.log(Buffer.isBuffer(req.body));
