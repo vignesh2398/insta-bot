@@ -12,7 +12,7 @@ dns.setServers(['1.1.1.1', '8.8.8.8']);
 
 dotenv.config();
 const app = express();
-app.use("/webhook", express.raw({ type: "application/json" }));
+app.use("/auth/webhook", express.raw({ type: "application/json" }));
 app.use(express.json());
 app.use(cookieParser());
 
