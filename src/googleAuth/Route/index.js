@@ -79,7 +79,7 @@ outhrouter.get("/google/callback", async (req, res, next) => {
     const cookieOptions = {
       httpOnly: true,
       secure: false, // Set to true in production with HTTPS
-      sameSite: "lax",
+      sameSite: "none",
       maxAge: tokens.expires_in ? tokens.expires_in * 1000 : 24 * 60 * 60 * 1000,
 
     };
