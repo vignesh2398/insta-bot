@@ -24,6 +24,7 @@ export const autoReplyModule = async (entries = []) => {
   try {
     console.log("autoReplyModule called with entries:", entries);
     if (!Array.isArray(entries) || entries.length === 0) {
+      console.log("No entries to process");
       return;
     }
 
