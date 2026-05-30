@@ -15,6 +15,7 @@ export const generateGoogleAuthUrl = () => {
     redirect_uri: REDIRECT_URI,
     response_type: "code",
     scope: scopes.join(" "),
+    prompt: "select_account",
     access_type: "offline",
   });
 
