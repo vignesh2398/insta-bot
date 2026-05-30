@@ -22,6 +22,7 @@ export const getToken= async () => {
 
 export const autoReplyModule = async (entries = []) => {
   try {
+    console.log("autoReplyModule called with entries:", entries);
     if (!Array.isArray(entries) || entries.length === 0) {
       return;
     }
@@ -99,7 +100,7 @@ export const autoReplyModule = async (entries = []) => {
       await Promise.allSettled(sendTasks);
     }
   } catch (error) {
-    console.error("Error in autoReplyModule", {
+    console.log("Error in autoReplyModule", {
       entriesCount: Array.isArray(entries) ? entries.length : 0,
       error: error.response?.data || error.message || error,
       stack: error.stack,
