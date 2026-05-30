@@ -2,6 +2,7 @@ import { generateAccessToken } from "../../config/acessToken.js";
 import { ValidateUser } from "../module/registerUser.js";
 import { getUserMedia } from "../module/media.js";
 import User from "../../model/user.js";
+import Media from "../../model/media.js";
 
 export const redirectUrl = () => {
   try {
@@ -74,6 +75,9 @@ export const getMedia = async ({googleId, profilePicture, username, next}) => {
     }
 
     const media = await getUserMedia({accessToken, igUserId, nextPageToken: next});
+
+
+
     return { ...media, profilePicture, username ,"next": media.nextPageToken};
   } catch (error) {
     console.error("Error in media retrieval:", error);

@@ -20,33 +20,40 @@ export const getToken= async () => {
 };
 
 
-export const autoReplyModule = async(entries=[]) => {
+export const autoReplyModule = async (entries = []) => {
   try {
-    let formattedData;
-// let accountId=      entries.id
-    entries.forEach((entry) => {
+    if (!Array.isArray(entries) || entries.length === 0) {
+      return;
+    }
+
+    const sendTasks = [];
+
+    for (const entry of entries) {
       const changes = entry?.changes || [];
-      changes.forEach((change) => {
+      for (const change of changes) {
         if (change.field !== "comments") {
-          return; // skip if not a comment
+          continue;
         }
-        const value = change.value;
-        // COMMENT DETAILS
+
+        const value = change.value || {};
         const commentId = value.id;
         const commentText = value.text;
-        // USER DETAILS
         const userId = value.from?.id;
         const username = value.from?.username;
-        // MEDIA DETAILS
         const mediaId = value.media?.id;
-        console.log("========== COMMENT RECEIVED ==========");
-        console.log("Username:", username);
-        console.log("User ID:", userId);
-        console.log("Comment:", commentText);
-        console.log("Comment ID:", commentId);
-        console.log("Media ID:", mediaId);
-        // Example object
-        formattedData = {
+
+        if (!commentId || !commentText || !userId || !mediaId) {
+          console.warn("Skipping incomplete comment payload", {
+            commentId,
+            commentText,
+            userId,
+            mediaId,
+            changeValue: value,
+          });
+          continue;
+        }
+
+        const formattedData = {
           username,
           userId,
           comment: commentText,
@@ -54,25 +61,46 @@ export const autoReplyModule = async(entries=[]) => {
           mediaId,
           recipientId: userId,
         };
-      });
-    });
-    // check mediaID and comment text from DB
- const mediaData=   await Media.find({
-  mediaId: formattedData.mediaId,
-  commentText: formattedData.comment.toLowerCase() 
-})
-if(mediaData.length===0){
-  console.log("No matching media found for comment:", formattedData.comment);
-  return;
-}
 
-mediaData.forEach((data)=>{
-  formattedData.replyMessage=data.replyMessage;
-    sendInstagramMessage(formattedData);
-})
+        const mediaData = await Media.find({
+          mediaId,
+          commentText: commentText.toLowerCase(),
+        });
 
+        if (!mediaData.length) {
+          console.log("No matching media found for comment:", commentText);
+          continue;
+        }
+
+        for (const data of mediaData) {
+          sendTasks.push(
+            sendInstagramMessage({
+              ...formattedData,
+              replyMessage: data.replyMessage,
+            }).catch((err) => {
+              console.error("sendInstagramMessage failed for comment", {
+                commentId,
+                mediaId,
+                userId,
+                replyMessage: data.replyMessage,
+                error: err.response?.data || err.message || err,
+                stack: err.stack,
+              });
+            })
+          );
+        }
+      }
+    }
+
+    if (sendTasks.length) {
+      await Promise.allSettled(sendTasks);
+    }
   } catch (error) {
-    console.log(error," Error in autoReplyModule");
- throw new Error(error.response?.data);    
+    console.error("Error in autoReplyModule", {
+      entriesCount: Array.isArray(entries) ? entries.length : 0,
+      error: error.response?.data || error.message || error,
+      stack: error.stack,
+    });
+    throw new Error(error.response?.data || error.message || "autoReplyModule failed");
   }
 };

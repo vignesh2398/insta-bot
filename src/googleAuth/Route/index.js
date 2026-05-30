@@ -3,6 +3,8 @@ import { generateGoogleAuthUrl } from "../controller/oauthurl.js";
 import express from 'express';
 import User from "../../model/user.js";
 import { getUserInfo } from "../../config/getuserInfo.js";
+import { autoReply } from "../../instaCommentAutomation/controller/autoReply.js";
+      import { verifyMetaSignature } from "../../config/signatureVerification.js";
 const outhrouter = express.Router();
 
 outhrouter.get("/redirectUrl",async (req, res,next) => {
@@ -79,6 +81,7 @@ outhrouter.get("/google/callback", async (req, res, next) => {
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
       maxAge: tokens.expires_in ? tokens.expires_in * 1000 : 24 * 60 * 60 * 1000,
+
     };
 
     return res
@@ -103,6 +106,39 @@ outhrouter.get("/google/callback", async (req, res, next) => {
       error: err.response?.data || err.message,
     });
   }
+});
+// need to put in no auth routes 
+outhrouter.get('/webhook', async (req,res,next) => {
+  try{
+
+  console.log("QUERY:", req.query);
+
+  const mode = req.query["hub.mode"];
+  const token = req.query["hub.verify_token"];
+  const challenge = req.query["hub.challenge"];
+
+  if (mode === "subscribe" && token === "my_instagram_webhook_12") {
+    console.log("WEBHOOK VERIFIED");
+    return res.type("text/plain").status(200).send(challenge);
+  }
+      
+  }catch(err){
+    console.error("Error in callback:", err);
+  return res.sendStatus(403);
+  }
+});
+outhrouter.post("/webhook",verifyMetaSignature,async (req, res,next) => {
+    try {
+      console.log("WEBHOOK EVENT:");
+      console.log(JSON.stringify(req.body, null, 2));
+      const result = await autoReply(req.body)
+
+  res.sendStatus(200);
+    }catch(err){
+        console.error("Error in callback:", err);
+        next(err);
+    }
+
 });
 
 
