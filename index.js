@@ -17,12 +17,20 @@ app.use(
   express.raw({ type: "application/json" })
 );
 app.use(cookieParser());
+
 app.use(
   cors({
-    origin:[ "http://localhost:5173", "https://accounts.google.com" ], // React frontend URL
+    origin: true,
     credentials: true,
   })
 );
+
+// app.use(
+//   cors({
+//     origin:[ "http://localhost:5173", "https://accounts.google.com" ], // React frontend URL
+//     credentials: true,
+//   })
+// );
 app.use(express.json());
 
 const PORT = 3000;
