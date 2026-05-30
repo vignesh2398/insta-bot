@@ -81,7 +81,7 @@ outhrouter.get("/google/callback", async (req, res, next) => {
       secure: true, // Set to true in production with HTTPS
       sameSite: "none",
       maxAge: tokens.expires_in ? tokens.expires_in * 1000 : 24 * 60 * 60 * 1000,
-
+      domain: "https://insta-bot-frontend-gamma.vercel.app"
     };
 
     return res
