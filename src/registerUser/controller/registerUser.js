@@ -8,15 +8,13 @@ export const redirectUrl = () => {
   try {
     const baseUrl = process.env.baseURl;
 
-    const params = new URLSearchParams({
-      force_reauth: "false",
-      client_id: process.env.INSTAGRAM_CLIENT_ID,
-      redirect_uri: process.env.REDIRECT_URI,
-      response_type: "code",
-      scope: process.env.INSTAGRAM_SCOPES,
-      prompt: "select_account",
-    });
-
+const params = new URLSearchParams({
+  client_id: process.env.INSTAGRAM_CLIENT_ID,
+  redirect_uri: process.env.REDIRECT_URI,
+  response_type: "code",
+  scope: process.env.INSTAGRAM_SCOPES,
+  auth_type: "rerequest",
+});
     return `${baseUrl}?${params.toString()}`;
 
   } catch (error) {
