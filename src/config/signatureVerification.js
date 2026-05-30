@@ -7,7 +7,7 @@ export const verifyMetaSignature = (req, res, next) => {
     return res.status(401).send("Missing signature");
   }
 
-  const appSecret = process.env.META_APP_SECRET;
+  const appSecret = process.env.INSTAGRAM_CLIENT_SECRET;
 
   const expectedSignature =
     "sha256=" +

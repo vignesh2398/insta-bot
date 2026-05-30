@@ -1,18 +1,24 @@
 import axios from "axios";
-
-
-          //  formattedData = {
-          //   username,
-          //   userId,
-          //   comment: commentText,
-          //   commentId,
-          //   mediaId,
-          //   recipientId: userId,
-          // };
+import User from "../model/user.js";
+export const getInstagramAccessTokenFromDB = async (igId) => {
+  try {
+const token=await User.findOne({"instagramAccounts.userid": igId})
+return token ? token.instagramAccounts[0].accessToken : null;
+  } catch (err) {
+    console.error("Error fetching Instagram access token from DB:", err);
+    return null;
+  }
+};
 
 export const sendInstagramMessage = async (data) => {
     try {
 
+      // get IG access token from DB
+      const igAccessToken = await getInstagramAccessTokenFromDB(data.igId);
+      if (!igAccessToken) {
+        throw new Error("Instagram access token not found in database");
+      }
+      console.log("Sending message with data:", data);
     const INSTAGRAM_API_URL = `https://graph.instagram.com/v25.0/me/messages`;
     const response = await axios.post(
       INSTAGRAM_API_URL,
@@ -26,7 +32,7 @@ export const sendInstagramMessage = async (data) => {
 },
       {
         headers: {
-          Authorization: `Bearer ${process.env.INSTAGRAM_ACCESS_TOKEN}`,
+          Authorization: `Bearer ${igAccessToken}`,
           "Content-Type": "application/json",
         },
       }
@@ -41,7 +47,7 @@ const publicCommentReply=["Hi, thanks for the comment.", "Check DM 📨", "Sure"
       }),
       {
         params: {
-          access_token: process.env.INSTAGRAM_ACCESS_TOKEN,
+          access_token: igAccessToken,
         },
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",

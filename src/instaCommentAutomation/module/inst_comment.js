@@ -27,7 +27,8 @@ export const autoReplyModule = async (entries = []) => {
     }
 
     const sendTasks = [];
-
+    const igId=entries[0].id
+  // console.log("idddd",entries[0].id,"iddd")
     for (const entry of entries) {
       const changes = entry?.changes || [];
       for (const change of changes) {
@@ -53,7 +54,19 @@ export const autoReplyModule = async (entries = []) => {
           continue;
         }
 
-        const formattedData = {
+
+        const mediaData = await Media.find({
+          mediaId: mediaId,
+          replyStatus: true,keywords: { $in: commentText.split(" ") },
+});
+
+        if (!mediaData.length) {
+          console.log("No matching media found for comment:", commentText);
+          continue;
+        }
+
+
+          const formattedData = {
           username,
           userId,
           comment: commentText,
@@ -61,22 +74,11 @@ export const autoReplyModule = async (entries = []) => {
           mediaId,
           recipientId: userId,
         };
-
-        const mediaData = await Media.find({
-          mediaId,
-          commentText: commentText.toLowerCase(),
-        });
-
-        if (!mediaData.length) {
-          console.log("No matching media found for comment:", commentText);
-          continue;
-        }
-
         for (const data of mediaData) {
           sendTasks.push(
             sendInstagramMessage({
               ...formattedData,
-              replyMessage: data.replyMessage,
+              replyMessage: data.replyMessage,igId
             }).catch((err) => {
               console.error("sendInstagramMessage failed for comment", {
                 commentId,
