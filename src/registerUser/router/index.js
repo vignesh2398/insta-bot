@@ -45,6 +45,7 @@ router.get('/webhook', async (req,res,next) => {
 
 router.post("/webhook", async (req, res, next) => {
   try {
+    console.log("dsfffffffffff",req.body,"ddsfsf")
     autoReply(req.body).catch((err) => {
       console.error("Async autoReply failed", {
         requestBody: req.body,
