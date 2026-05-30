@@ -2,9 +2,8 @@ import crypto from "crypto";
 
 export const verifyMetaSignature = (req, res, next) => {
   console.log("type:", typeof req.body);
-console.log("isBuffer:", Buffer.isBuffer(req.body));
   const signature = req.headers["x-hub-signature-256"];
-console.log("Received signature:", signature);
+
   if (!signature) {
     return res.status(401).send("Missing signature");
   }
