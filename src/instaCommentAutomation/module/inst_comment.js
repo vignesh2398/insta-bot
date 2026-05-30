@@ -22,6 +22,7 @@ export const getToken= async () => {
 
 export const autoReplyModule = async (entries = []) => {
   try {
+    console.log("entries",entries,"entries")
     if (!Array.isArray(entries) || entries.length === 0) {
       return;
     }
