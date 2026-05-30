@@ -13,7 +13,6 @@ const params = new URLSearchParams({
   redirect_uri: process.env.REDIRECT_URI,
   response_type: "code",
   scope: process.env.INSTAGRAM_SCOPES,
-  force_reauth: "true",
 });
     return `${baseUrl}?${params.toString()}`;
 
