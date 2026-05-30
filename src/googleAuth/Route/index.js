@@ -131,8 +131,9 @@ outhrouter.post("/webhook",verifyMetaSignature,async (req, res,next) => {
     try {
       console.log("WEBHOOK EVENT:");
       console.log(typeof req.body, "bodyyyy");
-      console.log(Buffer.isBuffer(req.body), "isBuffer");
-      const result = await autoReply(req.body)
+          const body = JSON.parse(req.body.toString());
+      console.log(Buffer.isBuffer(body), "isBuffer");
+      const result = await autoReply(body)
 
   res.sendStatus(200);
     }catch(err){
