@@ -21,6 +21,8 @@ export const verifyMetaSignature = (req, res, next) => {
     console.error("Invalid webhook signature");
     return res.status(403).send("Invalid signature");
   }
+
 console.log("Webhook signature verified");
+req.parsedBody = JSON.parse(req.body.toString());
   next();
 };
