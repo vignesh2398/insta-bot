@@ -1,5 +1,6 @@
 import crypto from "crypto";
-
+import express from "express";
+const app= express();
 export const verifyMetaSignature = (req, res, next) => {
   const signature = req.headers["x-hub-signature-256"];
 
@@ -23,6 +24,6 @@ export const verifyMetaSignature = (req, res, next) => {
   }
 
 console.log("Webhook signature verified");
-req.parsedBody = JSON.parse(req.body.toString());
+app.use(express.json());
   next();
 };
