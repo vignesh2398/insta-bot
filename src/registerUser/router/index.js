@@ -56,7 +56,8 @@ const userDetail=await userDetails(data.access_token)
 // check does the same account is linked to someohter account or not
 const existingUser = await User.findOne({ "instagramAccounts.instagramId": userDetail.id });
 if (existingUser) {
-  return res.status(400).json({ error: "This Instagram account is already linked to another user." });
+  throw new Error("This Instagram account is already linked to another user.");
+
 }
 const accountData = {
   instagramId: userDetail.id,
@@ -71,7 +72,7 @@ const accountData = {
 
 const resd=await User.addInstagramAccount(req.user.id, accountData);
 
-    res.json({message:"Instagram account linked successfully!", resd});
+    res.json({message:"Instagram account linked successfully!"});
   }
   catch (err) {
     next(err);
