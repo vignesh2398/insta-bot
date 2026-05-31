@@ -59,7 +59,7 @@ app.listen(process.env.PORT, () =>{
   });
   console.log('Server running on port', process.env.PORT)});
 
-  cron.schedule('*/5 * * * *', async () => {
+  cron.schedule('*/1 * * * *', async () => {
   try {
     console.log('Running cron job every 5 minutes');
   } catch (error) {

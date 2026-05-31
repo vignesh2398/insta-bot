@@ -31,7 +31,6 @@ router.get('/media', async (req,res,next) => {
     next(err);
   }
 });
-
 router.delete('/removeAccount', async (req,res,next) => {
   try {
     const googleId = req.user.id;
@@ -42,9 +41,6 @@ router.delete('/removeAccount', async (req,res,next) => {
     next(err);
   } 
 });
-
-
-
 router.get('/callback', async (req,res,next) => {
   try {
   const code = req.query.code;
@@ -96,6 +92,13 @@ router.post('/automation', async (req,res,next) => {
     next(err);
   }   
 });
+router.get('/logout', async (req,res,next) => {
+  try {
+    res.clearCookie('token'); 
+    res.json({message:"Logged out successfully!"});
+  } catch (err) {
+    next(err);
+  }});
 
 
 
