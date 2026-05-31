@@ -58,9 +58,13 @@ export const autoReplyModule = async (entries = []) => {
         }
 
 
-        const mediaData = await Media.find({
-          mediaId: mediaId,
-          replyStatus: true,keywords: { $in: commentText.split(" ") },
+const mediaData = await Media.find({
+  mediaId,
+  replyStatus: true,
+  $or: [
+    { keywords: { $in: commentText.split(" ") } },
+    { replyAll: true }
+  ]
 });
 
         if (!mediaData.length) {
