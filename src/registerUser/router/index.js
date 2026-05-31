@@ -32,7 +32,7 @@ router.get('/media', async (req,res,next) => {
   }
 });
 
-router.get('/removeAccount', async (req,res,next) => {
+router.delete('/removeAccount', async (req,res,next) => {
   try {
     const googleId = req.user.id;
     const result = await User.removeInstagramAccount(googleId);
