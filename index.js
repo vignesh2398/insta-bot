@@ -16,24 +16,16 @@ const app = express();
 app.use("/auth/webhook", express.raw({ type: "application/json" }));
 app.use(express.json());
 app.use(cookieParser());
-
 app.use(
   cors({
     origin: true,
     credentials: true,
   })
 );
-
 app.use('/health', (req, res) => {
   res.status(200).json({ status: "ok" });
 });
-
-
-
 const PORT = 3000;
-
-// google auth routes
-app.use('/auth', outhrouter)
 // write middleware for authentication and then use it here for all routes that require authentication
 
 const authMiddleware = (req, res, next) => {
@@ -54,10 +46,13 @@ const authMiddleware = (req, res, next) => {
       res.status(401).json({ error: "Invalid token" });
     });
 };
-
-
-
+// google auth routes
+app.use('/auth', outhrouter)
 app.use('/insta',authMiddleware,router)
+app.use((err, req, res, next) => {
+  console.error("Error:", err);
+  res.status(500).json({ error: err.message || "Internal Server Error" });
+});
 app.listen(process.env.PORT, () =>{ 
   mongoose.connect(process.env.mongourl).then(()=>{
     console.log("DB connected")
