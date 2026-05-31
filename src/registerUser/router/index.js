@@ -56,7 +56,7 @@ const userDetail=await userDetails(data.access_token)
 // check does the same account is linked to someohter account or not
 const existingUser = await User.findOne({ "instagramAccounts.instagramId": userDetail.id });
 if (existingUser) {
-  throw new Error({code:400,message:"This Instagram account is already linked to another user."});
+  throw new Error("This Instagram account is already linked to another user.");
 
 }
 const accountData = {

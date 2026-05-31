@@ -51,7 +51,7 @@ app.use('/auth', outhrouter)
 app.use('/insta',authMiddleware,router)
 app.use((err, req, res, next) => {
   console.error("Error:", JSON.stringify(err));
-  res.status(err.message.code || 500).json({ error: err.message.message || "Internal Server Error" });
+  res.status(err.message.code || 500).json({ error: err.message || "Internal Server Error" });
 });
 app.listen(process.env.PORT, () =>{ 
   mongoose.connect(process.env.mongourl).then(()=>{
