@@ -40,6 +40,10 @@ export const autoReplyModule = async (entries = []) => {
 
         const value = change.value || {};
         console.log("Processing comment change:",value)
+        if(value?.parent_id){
+          console.log("Skipping reply comment:", value.id);
+          continue;
+        }
         const commentId = value.id;
         const commentText = value.text;
         const userId = value.from?.id;
