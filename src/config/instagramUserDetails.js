@@ -30,7 +30,7 @@ const m=await Media.findOneAndUpdate(
   { mediaId: data.instagramPostId }, // search by unique mediaId
   {
     UserId: instagramId,
-    keywords: data.autoReply.keywords,
+    keywords: data.autoReply.keywords.join(",").toLowerCase().split(","),
     replyAll: data.autoReply.replyAll,
     mediaId: data.instagramPostId,
     replyMessage: data.autoReply.message,

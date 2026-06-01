@@ -66,7 +66,7 @@ const mediaData = await Media.find({
   mediaId,
   replyStatus: true,
   $or: [
-    { keywords: { $in: commentText.split(" ") } },
+    { keywords: { $in: commentText.split(" ").trim().toLowerCase() } },
     { replyAll: true }
   ]
 });
