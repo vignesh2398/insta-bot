@@ -111,7 +111,6 @@ function findMatchedKeyword(commentText, keywords = []) {
 
 export const autoReplyModule = async (entries = []) => {
   try {
-    console.log('[autoReplyModule] called with entries:', entries.length);
 
     if (!Array.isArray(entries) || entries.length === 0) {
       console.log('[autoReplyModule] No entries to process');

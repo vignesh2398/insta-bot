@@ -6,7 +6,9 @@ const instagramAccountSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-
+    DMCount:{
+      type:Number
+    },
     username: {
       type: String,
       required: true,

@@ -9,6 +9,8 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import { getUserInfo } from "./src/config/getuserInfo.js";
 import cron from 'node-cron';
+import User from "./src/model/user.js";
+import { userDetails } from "./src/config/acessToken.js";
 dns.setServers(['1.1.1.1', '8.8.8.8']);
 
 dotenv.config();
@@ -30,12 +32,9 @@ const PORT = 3000;
 
 const authMiddleware = (req, res, next) => {
   const token = req.cookies?.token;
-
-
   if (!token) {
     return res.status(401).json({ error: "Token missing" });
   }
-
   getUserInfo(token)
     .then((userResponse) => {
       req.user = userResponse.data; // Attach user info to request object

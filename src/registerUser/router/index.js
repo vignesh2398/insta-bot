@@ -31,7 +31,11 @@ router.get('/redirecturl', async (req, res, next) => {
 
 router.get('/profile', async (req, res, next) => {
   try {
-    res.json({ profilePicture: req.user.picture, username: req.user.given_name });
+
+
+    res.json({ profilePicture: req.user.picture, username: req.user.given_name,  "theme": "light",
+  "dmsSentToday": 34,
+  "dailyCap": 100 });
   } catch (err) {
     next(err);
   }

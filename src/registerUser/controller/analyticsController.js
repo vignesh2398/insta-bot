@@ -33,6 +33,13 @@ function daysAgo(n) {
    GET /insta/analytics/:mediaId
    ══════════════════════════════════════════════════════════════════════ */
 export async function getAnalytics({ mediaId, accessToken }) {
+  console.log([
+    axios.get(`${IG_BASE}/${mediaId}`, {
+      params: { fields: 'comments_count', access_token: accessToken },
+    }),
+    axios.get(`${IG_BASE}/${mediaId}/insights`, {
+      params: { metric: 'reach,impressions', access_token: accessToken },
+    })])
   // Fetch comment count + reach from Instagram Graph API in parallel
   const [commentRes, insightRes, mediaDoc] = await Promise.allSettled([
     axios.get(`${IG_BASE}/${mediaId}`, {
