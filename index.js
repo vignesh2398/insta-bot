@@ -58,9 +58,9 @@ app.listen(process.env.PORT, () =>{
   });
   console.log('Server running on port', process.env.PORT)});
 
-  cron.schedule('*/1 * * * *', async () => {
+  cron.schedule('*/45 * * * * *', async () => {
   try {
-    console.log('Running cron job every 5 minutes');
+    console.log('Running cron job every 45 sec');
   } catch (error) {
     console.error('Error fetching data from API:', error);
   }
