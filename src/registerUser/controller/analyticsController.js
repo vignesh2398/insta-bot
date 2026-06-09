@@ -36,7 +36,7 @@ export async function getAnalytics({ mediaId, accessToken }) {
 
   const data = await Promise.allSettled([
     axios.get(`${IG_BASE}/${mediaId}`, {
-      params: { metric="reach,comments,saved", access_token: accessToken },
+      params: { metric:"reach,comments,saved", access_token: accessToken },
     }),
     Media.findOne({ mediaId }),
   ]);
