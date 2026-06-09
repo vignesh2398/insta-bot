@@ -33,6 +33,8 @@ function daysAgo(n) {
    GET /insta/analytics/:mediaId
    ══════════════════════════════════════════════════════════════════════ */
 export async function getAnalytics({ mediaId, accessToken }) {
+try {
+  
 
   const data = await Promise.allSettled([
     axios.get(`${IG_BASE}/${mediaId}`, {
@@ -62,6 +64,10 @@ export async function getAnalytics({ mediaId, accessToken }) {
   //   : 0;
 
   return data;
+  } catch (error) {
+     console.error("Error in media retrieval:", error);
+    throw error;
+}
 }
 
 /* ══════════════════════════════════════════════════════════════════════
