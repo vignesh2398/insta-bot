@@ -33,61 +33,35 @@ function daysAgo(n) {
    GET /insta/analytics/:mediaId
    ══════════════════════════════════════════════════════════════════════ */
 export async function getAnalytics({ mediaId, accessToken }) {
-  console.log([
+
+  const data = await Promise.allSettled([
     axios.get(`${IG_BASE}/${mediaId}`, {
-      params: { fields: 'comments_count', access_token: accessToken },
-    }),
-    axios.get(`${IG_BASE}/${mediaId}/insights`, {
-      params: { metric: 'reach,impressions', access_token: accessToken },
-    })])
-  // Fetch comment count + reach from Instagram Graph API in parallel
-  const [commentRes, insightRes, mediaDoc] = await Promise.allSettled([
-    axios.get(`${IG_BASE}/${mediaId}`, {
-      params: { fields: 'comments_count', access_token: accessToken },
-    }),
-    axios.get(`${IG_BASE}/${mediaId}/insights`, {
-      params: { metric: 'reach,impressions', access_token: accessToken },
+      params: { metric=reach,comments,saved, access_token: accessToken },
     }),
     Media.findOne({ mediaId }),
   ]);
 
-  const comments = commentRes.status === 'fulfilled'
-    ? (commentRes.value.data?.comments_count ?? 0)
-    : 0;
 
-  const reach = insightRes.status === 'fulfilled'
-    ? (insightRes.value.data?.data?.find(m => m.name === 'reach')?.values?.[0]?.value ?? 0)
-    : 0;
 
-  const dmsSent   = mediaDoc.status === 'fulfilled' ? (mediaDoc.value?.dmsSent   ?? 0) : 0;
-  const dmsFailed = mediaDoc.status === 'fulfilled' ? (mediaDoc.value?.dmsFailed ?? 0) : 0;
-  const conversionRate = comments > 0 ? Math.round((dmsSent / comments) * 100) : 0;
+  // const dmsSent   = mediaDoc.status === 'fulfilled' ? (mediaDoc.value?.dmsSent   ?? 0) : 0;
+  // const dmsFailed = mediaDoc.status === 'fulfilled' ? (mediaDoc.value?.dmsFailed ?? 0) : 0;
+  // const conversionRate = comments > 0 ? Math.round((dmsSent / comments) * 100) : 0;
 
   // Weekly activity: count ActivityLog entries per day for last 7 days
-  const weeklyActivity = await Promise.all(
-    Array.from({ length: 7 }, (_, i) => {
-      const from = daysAgo(6 - i);
-      const to   = daysAgo(5 - i);
-      return ActivityLog.countDocuments({
-        mediaId,
-        status: 'sent',
-        createdAt: { $gte: from, $lt: to },
-      });
-    })
-  );
+
 
   // Activity change % vs previous week average
-  const thisWeek = weeklyActivity.reduce((a, b) => a + b, 0);
-  const prevWeekCount = await ActivityLog.countDocuments({
-    mediaId,
-    status: 'sent',
-    createdAt: { $gte: daysAgo(14), $lt: daysAgo(7) },
-  });
-  const activityChange = prevWeekCount > 0
-    ? Math.round(((thisWeek - prevWeekCount) / prevWeekCount) * 100)
-    : 0;
+  // const thisWeek = weeklyActivity.reduce((a, b) => a + b, 0);
+  // const prevWeekCount = await ActivityLog.countDocuments({
+  //   mediaId,
+  //   status: 'sent',
+  //   createdAt: { $gte: daysAgo(14), $lt: daysAgo(7) },
+  // });
+  // const activityChange = prevWeekCount > 0
+  //   ? Math.round(((thisWeek - prevWeekCount) / prevWeekCount) * 100)
+  //   : 0;
 
-  return { comments, dmsSent, dmsFailed, conversionRate, reach, weeklyActivity, activityChange };
+  return data;
 }
 
 /* ══════════════════════════════════════════════════════════════════════
