@@ -25,6 +25,7 @@ app.use(
   })
 );
 app.use('/health', (req, res) => {
+  console.log("helth api called")
   res.status(200).json({ status: "ok" });
 });
 const PORT = 3000;
