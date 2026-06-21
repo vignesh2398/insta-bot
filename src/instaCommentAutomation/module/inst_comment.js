@@ -131,10 +131,10 @@ export const autoReplyModule = async (entries = []) => {
         console.log('[autoReplyModule] Processing comment change:', value);
 
         // Skip reply-comments (replies to other comments)
-        if (value?.parent_id) {
-          console.log('[autoReplyModule] Skipping reply comment:', value.id);
-          continue;
-        }
+        // if (value?.parent_id) {
+        //   console.log('[autoReplyModule] Skipping reply comment:', value.id);
+        //   continue;
+        // }
 
         const commentId   = value.id;
         const commentText = value.text || '';
