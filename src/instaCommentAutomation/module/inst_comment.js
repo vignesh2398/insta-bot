@@ -176,13 +176,13 @@ export const autoReplyModule = async (entries = []) => {
             : findMatchedKeyword(commentText, mediaDoc.keywords);
 
           // ── Smart control: oneDmPerUser ──────────────────────────
-          if (mediaDoc.oneDmPerUser) {
-            const alreadySent = await hasAlreadyReceivedDm(mediaId, userId);
-            if (alreadySent) {
-              console.log(`[autoReplyModule] Skipping — already sent DM to user ${userId} for post ${mediaId}`);
-              continue;
-            }
-          }
+          // if (mediaDoc.oneDmPerUser) {
+          //   const alreadySent = await hasAlreadyReceivedDm(mediaId, userId);
+          //   if (alreadySent) {
+          //     console.log(`[autoReplyModule] Skipping — already sent DM to user ${userId} for post ${mediaId}`);
+          //     continue;
+          //   }
+          // }
 
           // ── Smart control: excludeFollowers ──────────────────────
           // NOTE: Follower check requires your own followers list in DB.
