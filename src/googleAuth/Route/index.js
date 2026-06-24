@@ -130,6 +130,7 @@ outhrouter.post("/webhook",verifyMetaSignature,async (req, res,next) => {
     try {
 
           const body = JSON.parse(req.body.toString());
+          console.log("webhook response start",body,"webhook response end")
       const result = await autoReply(body)
 
   res.sendStatus(200);
