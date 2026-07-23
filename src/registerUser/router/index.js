@@ -17,6 +17,31 @@ import { createRazorpayOrder, createSubscription } from '../../config/razorpay.j
 
 const router = express.Router();
 
+const saveSubscriptionForUser = async (userId, subscriptionPayload) => {
+  if (!userId) return null;
+
+  return User.findOneAndUpdate(
+    { googleId: userId },
+    {
+      $set: {
+        subscription: {
+          planName: subscriptionPayload.planName || 'pro',
+          status: subscriptionPayload.status || 'active',
+          provider: 'razorpay',
+          razorpaySubscriptionId: subscriptionPayload.razorpaySubscriptionId || null,
+          razorpayPlanId: subscriptionPayload.razorpayPlanId || null,
+          amount: subscriptionPayload.amount || 0,
+          currency: subscriptionPayload.currency || 'INR',
+          autoRenew: subscriptionPayload.autoRenew !== false,
+          isActive: subscriptionPayload.isActive !== false,
+          metadata: subscriptionPayload.metadata || {},
+        },
+      },
+    },
+    { new: true, upsert: true, runValidators: true }
+  );
+};
+
 /* ──────────────────────────────────────────────
    EXISTING ROUTES (unchanged)
 ────────────────────────────────────────────── */
@@ -33,10 +58,41 @@ router.get('/redirecturl', async (req, res, next) => {
 
 router.post('/create-order', async (req, res) => {
   try {
-    const { amount, currency = 'INR', receipt = 'insta-bot-checkout' } = req.body || {};
-    const result = await createRazorpayOrder({ amount, currency, receipt });
-    await createSubscription(result, req.user.id); // Assuming you have a function to create a subscription
-    return res.json(result);
+    const {
+      amount,
+      currency = 'INR',
+      receipt = 'insta-bot-checkout',
+      planId,
+      planName = 'pro',
+      autoRenew = true,
+      name,
+      email,
+      phone,
+    } = req.body || {};
+
+    const result = await createSubscription({
+      userId: req.user?.id,
+      amount,
+      currency,
+      receipt,
+      autoRenew,
+      planId,
+      customer: { name, email, contact: phone },
+    });
+
+    await saveSubscriptionForUser(req.user?.id, {
+      planName,
+      status: result.status === 'active' ? 'active' : 'trialing',
+      razorpaySubscriptionId: result.subscriptionId,
+      razorpayPlanId: result.planId,
+      amount: result.amount,
+      currency: result.currency,
+      autoRenew: result.autoRenew !== false,
+      isActive: true,
+      metadata: { receipt, source: 'create-order' },
+    });
+
+    return res.json({ success: true, autoRenew, data: result });
   } catch (error) {
     console.error('Razorpay create order error:', error);
     const status = error.statusCode || 500;
@@ -175,13 +231,41 @@ router.get('/billing/pricing',async(req,res,next)=>{
 
 router.post('/billing/checkout', async (req, res, next) => {
   try {
-    const result = await createRazorpayOrder({
-      amount: req.body?.amount || 100,
-      currency: req.body?.currency || 'INR',
-      receipt: req.body?.receipt || 'billing-checkout',
+    const {
+      amount = 100,
+      currency = 'INR',
+      receipt = 'billing-checkout',
+      planId,
+      planName = 'pro',
+      autoRenew = true,
+      name,
+      email,
+      phone,
+    } = req.body || {};
+
+    const result = await createSubscription({
+      userId: req.user?.id,
+      amount,
+      currency,
+      receipt,
+      autoRenew,
+      planId,
+      customer: { name, email, contact: phone },
     });
 
-    res.json({ success: true, data: result });
+    await saveSubscriptionForUser(req.user?.id, {
+      planName,
+      status: result.status === 'active' ? 'active' : 'trialing',
+      razorpaySubscriptionId: result.subscriptionId,
+      razorpayPlanId: result.planId,
+      amount: result.amount,
+      currency: result.currency,
+      autoRenew: result.autoRenew !== false,
+      isActive: true,
+      metadata: { receipt, source: 'billing-checkout' },
+    });
+
+    res.json({ success: true, autoRenew, data: result });
   } catch (error) {
     next(error);
   }

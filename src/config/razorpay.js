@@ -50,19 +50,94 @@ export const createRazorpayOrder = async ({ amount, currency = 'INR', receipt = 
   }
 };
 
-export const createSubscription=async(result, userId)=>{
-  try{
+export const createSubscription = async ({
+  userId,
+  amount,
+  currency = 'INR',
+  receipt = 'insta-bot-subscription',
+  autoRenew = true,
+  planId,
+  customerId,
+  customer,
+}) => {
+  const numericAmount = Number(amount);
 
-
-
+  if (!Number.isFinite(numericAmount) || numericAmount < 100) {
+    const error = new Error('Amount must be at least 100 paise.');
+    error.statusCode = 400;
+    throw error;
   }
-  catch(err){
-    console.error("Error creating subscription:", err);
-    const error = new Error('Unable to create Razorpay subscription.');
+
+  if (!process.env.RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET) {
+    const error = new Error('Razorpay credentials are not configured.');
     error.statusCode = 500;
-    throw error;  
-}
-}
+    throw error;
+  }
+
+  try {
+    const effectivePlanId = planId || process.env.RAZORPAY_PLAN_ID;
+
+    if (!effectivePlanId) {
+      return {
+        subscriptionId: null,
+        autoRenew,
+        status: 'draft',
+        amount: Math.round(numericAmount),
+        currency: currency.toUpperCase(),
+        planId: null,
+        receipt,
+        message: 'Auto-renewal enabled locally. Configure Razorpay plan ID to create a live recurring subscription.',
+      };
+    }
+
+    let resolvedCustomerId = customerId;
+    if (!resolvedCustomerId && customer?.email) {
+      const createdCustomer = await razorpay.customers.create({
+        name: customer.name || 'Insta Bot User',
+        email: customer.email,
+        contact: customer.contact || '',
+        notes: {
+          userId: userId || '',
+          autoRenew: String(autoRenew),
+        },
+      });
+      resolvedCustomerId = createdCustomer.id;
+    }
+
+    const subscriptionPayload = {
+      plan_id: effectivePlanId,
+      customer_notify: 1,
+      quantity: 1,
+      total_count: 9999,
+      notes: {
+        userId: userId || '',
+        autoRenew: String(autoRenew),
+        receipt,
+      },
+    };
+
+    if (resolvedCustomerId) {
+      subscriptionPayload.customer_id = resolvedCustomerId;
+    }
+
+    const subscription = await razorpay.subscriptions.create(subscriptionPayload);
+
+    return {
+      subscriptionId: subscription.id,
+      status: subscription.status,
+      autoRenew,
+      amount: subscription.amount || Math.round(numericAmount),
+      currency: (subscription.currency || currency).toUpperCase(),
+      planId: effectivePlanId,
+      receipt,
+    };
+  } catch (error) {
+    console.error('Error creating subscription:', error);
+    const subscriptionError = new Error('Unable to create Razorpay subscription.');
+    subscriptionError.statusCode = 500;
+    throw subscriptionError;
+  }
+};
 
 export const verifyRazorpaySignature = ({ razorpay_order_id, razorpay_payment_id, razorpay_signature }) => {
   if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
