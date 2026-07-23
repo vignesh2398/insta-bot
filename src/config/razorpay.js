@@ -25,18 +25,41 @@ export const createRazorpayOrder = async ({ amount, currency = 'INR', receipt = 
   }
 
   try {
-    const order = await razorpay.orders.create({
-      amount: Math.round(numericAmount),
-      currency,
-      receipt: receipt || `receipt_${Date.now()}`,
-    });
+    // const order = await razorpay.orders.create({
+    //   amount: Math.round(numericAmount),
+    //   currency,
+    //   receipt: receipt || `receipt_${Date.now()}`,
+    // });
 
-    return {
-      order_id: order.id,
-      amount: order.amount,
-      currency: order.currency,
-      key: process.env.RAZORPAY_KEY_ID,
-    };
+    // return {
+    //   order_id: order.id,
+    //   amount: order.amount,
+    //   currency: order.currency,
+    //   key: process.env.RAZORPAY_KEY_ID,
+    // };
+
+const plan = await razorpay.plans.create({
+  period: "monthly",
+  interval: 1,
+  item: {
+    name: "Starter Plan",
+    amount: 1900, // ₹19 in paise
+    currency: "INR",
+    description: "Monthly subscription"
+  }
+});
+
+    const subscription = await razorpay.subscriptions.create({
+  plan_id: plan.id,
+  customer_notify: 1,
+  total_count: 12
+});
+
+return {
+  subscription_id: subscription.id,
+  key: process.env.RAZORPAY_KEY_ID
+};
+
   } catch (error) {
     if (error.statusCode === 401 || error.statusCode === 403) {
       const authError = new Error('Razorpay authentication failed.');
