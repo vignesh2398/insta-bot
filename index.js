@@ -45,7 +45,7 @@ app.get('/checkout', (req, res) => {
   });
 });
 
-app.post('/api/create-order', async (req, res) => {
+app.post('/create-order', async (req, res) => {
   try {
     const { amount, currency = 'INR', receipt = 'insta-bot-checkout' } = req.body || {};
     const result = await createRazorpayOrder({ amount, currency, receipt });
