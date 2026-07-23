@@ -29,6 +29,143 @@ router.get('/redirecturl', async (req, res, next) => {
   }
 });
 
+
+router.get('//billing/pricing',async(req,res,next)=>{
+  try {
+    res.json({
+  "plans": [
+    {
+      "id": "free",
+      "name": "Free",
+      "tagline": "Get started with automation, no card needed.",
+      "monthlyPrice": 0,
+      "annualPrice": 0,
+      "dmCap": "50 DMs / day",
+      "dmCapClass": "free",
+      "badge": { "label": "Forever free", "cls": "free-badge", "icon": "🆓" },
+      "features": [
+        { "text": "50 automated DMs per day", "included": true, "highlight": true },
+        { "text": "1 Instagram account", "included": true },
+        { "text": "Keyword trigger automation", "included": true },
+        { "text": "Basic activity log", "included": true },
+        { "text": "Follow-to-DM flow", "included": false },
+        { "text": "Message rotation", "included": false },
+        { "text": "Analytics dashboard", "included": false },
+        { "text": "Priority support", "included": false }
+      ],
+      "cta": "Get started free",
+      "ctaCls": "cta-outline",
+      "featured": false
+    },
+    {
+      "id": "starter",
+      "name": "Starter",
+      "tagline": "For creators growing their audience.",
+      "monthlyPrice": 19,
+      "annualPrice": 15,
+      "dmCap": "200 DMs / day",
+      "dmCapClass": "starter",
+      "badge": null,
+      "features": [
+        { "text": "200 automated DMs per day", "included": true, "highlight": true },
+        { "text": "1 Instagram account", "included": true },
+        { "text": "Keyword trigger automation", "included": true },
+        { "text": "Full activity log", "included": true },
+        { "text": "Follow-to-DM flow", "included": true },
+        { "text": "Message rotation", "included": false },
+        { "text": "Analytics dashboard", "included": false },
+        { "text": "Priority support", "included": false }
+      ],
+      "cta": "Start Starter",
+      "ctaCls": "cta-outline",
+      "featured": false
+    },
+    {
+      "id": "growth",
+      "name": "Growth",
+      "tagline": "For brands ready to scale engagement.",
+      "monthlyPrice": 49,
+      "annualPrice": 39,
+      "dmCap": "500 DMs / day",
+      "dmCapClass": "growth",
+      "badge": { "label": "Most popular", "cls": "popular", "icon": "🔥" },
+      "features": [
+        { "text": "500 automated DMs per day", "included": true, "highlight": true },
+        { "text": "3 Instagram accounts", "included": true },
+        { "text": "Keyword trigger automation", "included": true },
+        { "text": "Full activity log", "included": true },
+        { "text": "Follow-to-DM flow", "included": true },
+        { "text": "Message rotation", "included": true },
+        { "text": "Analytics dashboard", "included": true },
+        { "text": "Priority support", "included": false }
+      ],
+      "cta": "Start Growth",
+      "ctaCls": "cta-gradient",
+      "featured": true
+    },
+    {
+      "id": "pro",
+      "name": "Pro",
+      "tagline": "Unlimited power for serious businesses.",
+      "monthlyPrice": 99,
+      "annualPrice": 79,
+      "dmCap": "Unlimited DMs",
+      "dmCapClass": "pro",
+      "badge": { "label": "Best value", "cls": "pro-badge", "icon": "⚡" },
+      "features": [
+        { "text": "Unlimited automated DMs", "included": true, "highlight": true },
+        { "text": "Unlimited accounts", "included": true },
+        { "text": "Keyword trigger automation", "included": true },
+        { "text": "Full activity log", "included": true },
+        { "text": "Follow-to-DM flow", "included": true },
+        { "text": "Message rotation", "included": true },
+        { "text": "Analytics dashboard", "included": true },
+        { "text": "Priority support", "included": true }
+      ],
+      "cta": "Go Pro",
+      "ctaCls": "cta-outline",
+      "featured": false
+    }
+  ],
+
+  "faqs": [
+    {
+      "q": "Can I upgrade or downgrade anytime?",
+      "a": "Yes — changes take effect at the start of your next billing cycle. If you upgrade mid-cycle, you'll only pay the prorated difference."
+    },
+    {
+      "q": "What happens when I hit my daily DM cap?",
+      "a": "Automation pauses for the rest of that day and resumes automatically at midnight UTC. You'll see a warning in the dashboard when you're at 80% of your limit."
+    },
+    {
+      "q": "Do unused DMs roll over?",
+      "a": "No — the cap resets daily. It's designed to keep sending patterns within Instagram's own guidelines."
+    },
+    {
+      "q": "Is there a free trial on paid plans?",
+      "a": "Starter and Growth both include a 7-day free trial, no card required. Pro requires a card upfront but can be cancelled anytime in the first 14 days for a full refund."
+    },
+    {
+      "q": "What payment methods do you accept?",
+      "a": "All major credit and debit cards via Stripe. Indian users can also pay via UPI and net banking."
+    }
+  ],
+
+  "compareRows": [
+    { "feature": "Daily DM limit", "free": "50", "starter": "200", "growth": "500", "pro": "Unlimited" },
+    { "feature": "Instagram accounts", "free": "1", "starter": "1", "growth": "3", "pro": "Unlimited" },
+    { "feature": "Keyword triggers", "free": true, "starter": true, "growth": true, "pro": true },
+    { "feature": "Follow-to-DM flow", "free": false, "starter": true, "growth": true, "pro": true },
+    { "feature": "Message rotation", "free": false, "starter": false, "growth": true, "pro": true },
+    { "feature": "Analytics dashboard", "free": false, "starter": false, "growth": true, "pro": true },
+    { "feature": "Priority support", "free": false, "starter": false, "growth": false, "pro": true }
+  ]
+})
+  } catch (error) {
+    
+  }
+})
+
 router.get('/profile', async (req, res, next) => {
   try {
 
