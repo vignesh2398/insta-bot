@@ -25,6 +25,7 @@ const saveSubscriptionForUser = async (userId, subscriptionPayload) => {
     {
       $set: {
         subscription: {
+          userId,
           planName: subscriptionPayload.planName || 'pro',
           status: subscriptionPayload.status || 'active',
           provider: 'razorpay',
