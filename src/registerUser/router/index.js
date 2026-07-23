@@ -30,7 +30,7 @@ router.get('/redirecturl', async (req, res, next) => {
 });
 
 
-router.get('//billing/pricing',async(req,res,next)=>{
+router.get('/billing/pricing',async(req,res,next)=>{
   try {
     res.json({
   "plans": [
