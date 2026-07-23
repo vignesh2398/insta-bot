@@ -48,7 +48,7 @@ const plan = await razorpay.plans.create({
     description: "Monthly subscription"
   }
 });
-
+console.log('Created plan:', plan);
     const subscription = await razorpay.subscriptions.create({
   plan_id: plan.id,
   customer_notify: 1,
