@@ -57,7 +57,7 @@ app.post('/create-order', async (req, res) => {
   }
 });
 
-app.post('/api/verify-payment', (req, res) => {
+app.post('/verify-payment', (req, res) => {
   try {
     const result = verifyRazorpaySignature(req.body || {});
     return res.json(result);
