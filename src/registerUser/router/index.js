@@ -47,10 +47,8 @@ router.get('/billing/pricing',async(req,res,next)=>{
         { "text": "50 automated DMs per day", "included": true, "highlight": true },
         { "text": "1 Instagram account", "included": true },
         { "text": "Keyword trigger automation", "included": true },
-        { "text": "Basic activity log", "included": true },
         { "text": "Follow-to-DM flow", "included": false },
         { "text": "Message rotation", "included": false },
-        { "text": "Analytics dashboard", "included": false },
         { "text": "Priority support", "included": false }
       ],
       "cta": "Get started free",
@@ -70,10 +68,8 @@ router.get('/billing/pricing',async(req,res,next)=>{
         { "text": "200 automated DMs per day", "included": true, "highlight": true },
         { "text": "1 Instagram account", "included": true },
         { "text": "Keyword trigger automation", "included": true },
-        { "text": "Full activity log", "included": true },
         { "text": "Follow-to-DM flow", "included": true },
         { "text": "Message rotation", "included": false },
-        { "text": "Analytics dashboard", "included": false },
         { "text": "Priority support", "included": false }
       ],
       "cta": "Start Starter",
@@ -93,10 +89,8 @@ router.get('/billing/pricing',async(req,res,next)=>{
         { "text": "500 automated DMs per day", "included": true, "highlight": true },
         { "text": "3 Instagram accounts", "included": true },
         { "text": "Keyword trigger automation", "included": true },
-        { "text": "Full activity log", "included": true },
         { "text": "Follow-to-DM flow", "included": true },
         { "text": "Message rotation", "included": true },
-        { "text": "Analytics dashboard", "included": true },
         { "text": "Priority support", "included": false }
       ],
       "cta": "Start Growth",
@@ -119,7 +113,6 @@ router.get('/billing/pricing',async(req,res,next)=>{
         { "text": "Full activity log", "included": true },
         { "text": "Follow-to-DM flow", "included": true },
         { "text": "Message rotation", "included": true },
-        { "text": "Analytics dashboard", "included": true },
         { "text": "Priority support", "included": true }
       ],
       "cta": "Go Pro",
