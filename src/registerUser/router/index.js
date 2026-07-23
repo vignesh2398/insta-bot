@@ -192,8 +192,8 @@ router.get('/profile', async (req, res, next) => {
 // check subscription status and return profile info along with subscription details
  const {subscription}=await User.findOne({ googleId: req.user.id })
     
-    res.json({ profilePicture: req.user.picture, username: req.user.given_name,subscription,  "theme": "light",
-  "dmsSentToday": 34,
+    res.json({ profilePicture: req.user.picture, username: req.user.given_name, subscription: subscription ? subscription.planName : null,  "theme": "light",
+  "dmsSentToday": 90,
   "dailyCap": 100 });
   } catch (err) {
     next(err);
