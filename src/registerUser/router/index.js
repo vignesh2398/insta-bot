@@ -13,6 +13,7 @@ import {
   bulkUpdateAutomation,
   duplicateAutomation,
 } from '../controller/analyticsController.js';
+import { createRazorpayOrder } from '../../config/razorpay.js';
 
 const router = express.Router();
 
@@ -158,6 +159,20 @@ router.get('/billing/pricing',async(req,res,next)=>{
     
   }
 })
+
+router.post('/billing/checkout', async (req, res, next) => {
+  try {
+    const result = await createRazorpayOrder({
+      amount: req.body?.amount || 100,
+      currency: req.body?.currency || 'INR',
+      receipt: req.body?.receipt || 'billing-checkout',
+    });
+
+    res.json({ success: true, data: result });
+  } catch (error) {
+    next(error);
+  }
+});
 
 router.get('/profile', async (req, res, next) => {
   try {

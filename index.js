@@ -2,6 +2,8 @@ import express from "express";
 import axios from "axios";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
+import fs from "node:fs";
+import path from "node:path";
 import router from "./src/registerUser/router/index.js";
 import outhrouter from "./src/googleAuth/Route/index.js";
 import dns from 'node:dns';
@@ -11,6 +13,7 @@ import { getUserInfo } from "./src/config/getuserInfo.js";
 import cron from 'node-cron';
 import User from "./src/model/user.js";
 import { userDetails } from "./src/config/acessToken.js";
+import { createRazorpayOrder, verifyRazorpaySignature } from './src/config/razorpay.js';
 dns.setServers(['1.1.1.1', '8.8.8.8']);
 
 dotenv.config();
@@ -27,6 +30,42 @@ app.use(
 app.use('/health', (req, res) => {
   console.log("helth api called")
   res.status(200).json({ status: "ok" });
+});
+
+app.get('/checkout', (req, res) => {
+  const checkoutPagePath = path.join(process.cwd(), 'checkout.html');
+  fs.readFile(checkoutPagePath, 'utf8', (err, file) => {
+    if (err) {
+      console.error('Unable to load checkout page:', err);
+      return res.status(500).json({ error: 'Checkout page unavailable' });
+    }
+
+    const html = file.replace('__RAZORPAY_KEY_ID__', process.env.RAZORPAY_KEY_ID || '');
+    res.send(html);
+  });
+});
+
+app.post('/api/create-order', async (req, res) => {
+  try {
+    const { amount, currency = 'INR', receipt = 'insta-bot-checkout' } = req.body || {};
+    const result = await createRazorpayOrder({ amount, currency, receipt });
+    return res.json(result);
+  } catch (error) {
+    console.error('Razorpay create order error:', error);
+    const status = error.statusCode || 500;
+    return res.status(status).json({ error: error.message || 'Unable to create Razorpay order.' });
+  }
+});
+
+app.post('/api/verify-payment', (req, res) => {
+  try {
+    const result = verifyRazorpaySignature(req.body || {});
+    return res.json(result);
+  } catch (error) {
+    console.error('Razorpay verify error:', error);
+    const status = error.statusCode || 500;
+    return res.status(status).json({ success: false, error: error.message || 'Payment verification failed.' });
+  }
 });
 const PORT = 3000;
 // write middleware for authentication and then use it here for all routes that require authentication
