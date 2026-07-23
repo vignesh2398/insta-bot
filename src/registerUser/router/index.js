@@ -190,9 +190,9 @@ router.post('/billing/checkout', async (req, res, next) => {
 router.get('/profile', async (req, res, next) => {
   try {
 // check subscription status and return profile info along with subscription details
- await User.findOne({ googleId: req.user.id })
+ const {subscription}=await User.findOne({ googleId: req.user.id })
     
-    res.json({ profilePicture: req.user.picture, username: req.user.given_name,  "theme": "light",
+    res.json({ profilePicture: req.user.picture, username: req.user.given_name,subscription,  "theme": "light",
   "dmsSentToday": 34,
   "dailyCap": 100 });
   } catch (err) {
