@@ -13,7 +13,7 @@ import {
   bulkUpdateAutomation,
   duplicateAutomation,
 } from '../controller/analyticsController.js';
-import { createRazorpayOrder } from '../../config/razorpay.js';
+import { createRazorpayOrder, createSubscription } from '../../config/razorpay.js';
 
 const router = express.Router();
 
@@ -30,6 +30,19 @@ router.get('/redirecturl', async (req, res, next) => {
   }
 });
 
+
+router.post('/create-order', async (req, res) => {
+  try {
+    const { amount, currency = 'INR', receipt = 'insta-bot-checkout' } = req.body || {};
+    const result = await createRazorpayOrder({ amount, currency, receipt });
+    await createSubscription(result, req.user.id); // Assuming you have a function to create a subscription
+    return res.json(result);
+  } catch (error) {
+    console.error('Razorpay create order error:', error);
+    const status = error.statusCode || 500;
+    return res.status(status).json({ error: error.message || 'Unable to create Razorpay order.' });
+  }
+});
 
 router.get('/billing/pricing',async(req,res,next)=>{
   try {
@@ -176,9 +189,10 @@ router.post('/billing/checkout', async (req, res, next) => {
 
 router.get('/profile', async (req, res, next) => {
   try {
-
-
-    res.json({ profilePicture: req.user.picture, username: req.user.given_name,  "theme": "light",
+// check subscription status and return profile info along with subscription details
+ const {subscription}=await User.findOne({ googleId: req.user.id })
+    console.log("subscription",subscription)
+    res.json({ profilePicture: req.user.picture, username: req.user.given_name, subscription, "theme": "light",
   "dmsSentToday": 34,
   "dailyCap": 100 });
   } catch (err) {

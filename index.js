@@ -32,30 +32,8 @@ app.use('/health', (req, res) => {
   res.status(200).json({ status: "ok" });
 });
 
-app.get('/checkout', (req, res) => {
-  const checkoutPagePath = path.join(process.cwd(), 'checkout.html');
-  fs.readFile(checkoutPagePath, 'utf8', (err, file) => {
-    if (err) {
-      console.error('Unable to load checkout page:', err);
-      return res.status(500).json({ error: 'Checkout page unavailable' });
-    }
 
-    const html = file.replace('__RAZORPAY_KEY_ID__', process.env.RAZORPAY_KEY_ID || '');
-    res.send(html);
-  });
-});
 
-app.post('/create-order', async (req, res) => {
-  try {
-    const { amount, currency = 'INR', receipt = 'insta-bot-checkout' } = req.body || {};
-    const result = await createRazorpayOrder({ amount, currency, receipt });
-    return res.json(result);
-  } catch (error) {
-    console.error('Razorpay create order error:', error);
-    const status = error.statusCode || 500;
-    return res.status(status).json({ error: error.message || 'Unable to create Razorpay order.' });
-  }
-});
 
 app.post('/verify-payment', (req, res) => {
   try {

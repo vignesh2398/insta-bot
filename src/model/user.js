@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { subscriptionSchema } from "./subscription.js";
 
 const instagramAccountSchema = new mongoose.Schema(
   {
@@ -80,6 +81,11 @@ const googleAuthSchema = new mongoose.Schema(
     },
 
     instagramAccounts: [instagramAccountSchema],
+
+    subscription: {
+      type: subscriptionSchema,
+      default: () => ({ planName: "free", status: "active", isActive: true }),
+    },
 
     lastLogin: {
       type: Date,

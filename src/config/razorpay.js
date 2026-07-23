@@ -50,6 +50,20 @@ export const createRazorpayOrder = async ({ amount, currency = 'INR', receipt = 
   }
 };
 
+export const createSubscription=async(result, userId)=>{
+  try{
+
+
+
+  }
+  catch(err){
+    console.error("Error creating subscription:", err);
+    const error = new Error('Unable to create Razorpay subscription.');
+    error.statusCode = 500;
+    throw error;  
+}
+}
+
 export const verifyRazorpaySignature = ({ razorpay_order_id, razorpay_payment_id, razorpay_signature }) => {
   if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
     const error = new Error('Missing payment verification data.');
