@@ -61,6 +61,7 @@ return {
 };
 
   } catch (error) {
+    console.log('Error creating Razorpay order:', error);
     if (error.statusCode === 401 || error.statusCode === 403) {
       const authError = new Error('Razorpay authentication failed.');
       authError.statusCode = 401;
