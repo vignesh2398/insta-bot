@@ -54,6 +54,11 @@ const publicCommentReply=["Hi, thanks for the comment.", "Check DM 📨", "Sure"
         },
       }
     );
+    // update the user table with count
+    await User.updateOne(
+      { "instagramAccounts.userid": data.igId },
+      { $inc: { "instagramAccounts.$.messageCount": 1 } }
+    );
 
     console.log(publicReply.data);
  
