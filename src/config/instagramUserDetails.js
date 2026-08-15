@@ -24,7 +24,7 @@ console.log("Fetching Instagram user details for Google ID:", id);
 
 export const updateInstagramMedia = async ({data, instagramId}) => {
     try {
-
+console.log("Updating Instagram media for user:", instagramId, "with data:", data);
 
 const m=await Media.findOneAndUpdate(
   { mediaId: data.instagramPostId }, // search by unique mediaId
