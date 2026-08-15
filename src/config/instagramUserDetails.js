@@ -22,35 +22,34 @@ console.log("Fetching Instagram user details for Google ID:", id);
     }
 }
 
-export const updateInstagramMedia = async ({data, instagramId}) => {
-    try {
-console.log("Updating Instagram media for user:", instagramId, "with data:", data);
+export const updateInstagramMedia = async ({ data, instagramId }) => {
+  try {
+    const autoReply = data?.autoReply ?? {};
 
-const m=await Media.findOneAndUpdate(
-  { mediaId: data.instagramPostId }, // search by unique mediaId
-  {
-    UserId: instagramId,
-    keywords: (data.autoReply?.keywords ?? []).join(",").toLowerCase().split(","),
-    replyAll: data.autoReply.replyAll,
-    mediaId: data.instagramPostId,
-    oneDmPerUser: data.autoReply.oneDmPerUser,
-    followToDm: data.autoReply.followToDm,
-    replyMessage: data.autoReply.message,
-    rotateMessages: data.autoReply.rotateMessages,
-    personalizeMessage: data.autoReply.personalizeMessage,
-    replyStatus: data.autoReply.enabled,
-  },
-  {
-    upsert: true, // create if not found
-    returnDocument: 'after',    // return updated document
-    runValidators: true,
+    const mediaDoc = await Media.findOneAndUpdate(
+      { mediaId: data?.instagramPostId },
+      {
+        UserId: instagramId,
+        keywords: (autoReply.keywords ?? []).map((k) => String(k).trim().toLowerCase()),
+        replyAll: Boolean(autoReply.replyAll),
+        mediaId: data?.instagramPostId,
+        oneDmPerUser: Boolean(autoReply.oneDmPerUser),
+        excludeFollowers: Boolean(autoReply.followToDm ?? false),
+        replyMessage: autoReply.message ?? "",
+        rotateMessages: Boolean(autoReply.rotateMessages),
+        personalizeMessage: Boolean(autoReply.personalizeMessage),
+        replyStatus: Boolean(autoReply.enabled),
+      },
+      {
+        upsert: true,
+        new: true,
+        runValidators: true,
+      }
+    );
+
+    return { success: true, message: "Instagram media updated successfully", mediaDoc };
+  } catch (error) {
+    console.error("Error updating Instagram media:", error);
+    throw new Error("Failed to update Instagram media");
   }
-);
-  
-        return { success: true, message: "Instagram media updated successfully" };
-    }
-    catch (error) {
-        console.error("Error updating Instagram media:", error);
-        throw error;
-    }   
-}
+};
