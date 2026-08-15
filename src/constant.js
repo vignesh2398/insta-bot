@@ -13,4 +13,4 @@ const plan={
     }
 }
 
-module.exports = plan;
+export default plan;
