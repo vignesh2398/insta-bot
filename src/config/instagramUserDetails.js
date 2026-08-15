@@ -33,7 +33,11 @@ const m=await Media.findOneAndUpdate(
     keywords: (data.autoReply?.keywords ?? []).join(",").toLowerCase().split(","),
     replyAll: data.autoReply.replyAll,
     mediaId: data.instagramPostId,
+    oneDmPerUser: data.autoReply.oneDmPerUser,
+    followToDm: data.autoReply.followToDm,
     replyMessage: data.autoReply.message,
+    rotateMessages: data.autoReply.rotateMessages,
+    personalizeMessage: data.autoReply.personalizeMessage,
     replyStatus: data.autoReply.enabled,
   },
   {
