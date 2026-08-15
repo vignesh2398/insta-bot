@@ -191,10 +191,10 @@ router.post('/billing/checkout', async (req, res, next) => {
 router.get('/profile', async (req, res, next) => {
   try {
 // check subscription status and return profile info along with subscription details
- const {subscription}=await User.findOne({ googleId: req.user.id })
+ const {subscription,instagramAccounts}=await User.findOne({ googleId: req.user.id })
     
     res.json({ profilePicture: req.user.picture, username: req.user.given_name, subscription: subscription ? subscription.planName : null,  "theme": "light",
-  "dmsSentToday": 90,
+  "dmsSentToday": instagramAccounts?.[0]?.DMCount || 0,
   "dailyCap": plan[subscription?.planName || 'free'].DMcap });
   } catch (err) {
     next(err);
