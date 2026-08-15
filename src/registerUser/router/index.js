@@ -3,6 +3,7 @@ import { getMedia, redirectUrl, validateUser } from '../controller/registerUser.
 import { autoReply } from '../../instaCommentAutomation/controller/autoReply.js';
 import { generateAccessToken, userDetails } from '../../config/acessToken.js';
 import User from '../../model/user.js';
+import plan from '../../constant.js';
 import { getInstagramUserDetails, updateInstagramMedia } from '../../config/instagramUserDetails.js';
 import {
   getAnalytics,
@@ -194,7 +195,7 @@ router.get('/profile', async (req, res, next) => {
     
     res.json({ profilePicture: req.user.picture, username: req.user.given_name, subscription: subscription ? subscription.planName : null,  "theme": "light",
   "dmsSentToday": 90,
-  "dailyCap": 100 });
+  "dailyCap": plan[subscription?.planName || 'free'].DMcap });
   } catch (err) {
     next(err);
   }

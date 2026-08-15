@@ -79,6 +79,10 @@ const googleAuthSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
+    theme:{
+      type:String,
+      default:"light" 
+    },
 
     instagramAccounts: [instagramAccountSchema],
 
